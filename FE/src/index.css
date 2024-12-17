@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+a.active hr {
+  @apply block;
+}
+
+a.active p {
+  @apply text-black;
+}

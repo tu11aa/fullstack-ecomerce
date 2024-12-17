@@ -1,86 +1,83 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { NavLink, Link, useLocation } from "react-router-dom";
+import { assets } from "../assets/assets.js";
 
 const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location]);
+
   return (
-    <div>
-      <nav className="bg-white shadow-lg w-full fixed top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <a href="/" className="text-xl font-bold">
-                Fullstack Ecommerce App
-              </a>
-            </div>
+    <>
+      <div className="fixed px-2 top-0 left-0 right-0 z-50 bg-white shadow-md">
+        <div className="flex items-center justify-between py-5 font-medium">
+          <img src={assets.logo} className="w-36" alt="logo" />
+          <ul className="hidden sm:flex gap-5 text-sm text-gray-700">
+            <NavLink to="/" className="flex flex-col items-center gap-1">
+              <p>Home</p>
+              <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
+            </NavLink>
+            <NavLink to="/about" className="flex flex-col items-center gap-1">
+              <p>About</p>
+              <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
+            </NavLink>
+          </ul>
 
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button className="flex items-center p-2 rounded-md hover:bg-gray-100">
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              </button>
-            </div>
+          <div className="flex items-center gap-5">
+            <img
+              src={assets.search_icon}
+              className="w-5 cursor-pointer"
+              alt="search"
+            />
 
-            {/* Desktop menu */}
-            <div className="hidden md:flex md:items-center md:space-x-8">
-              <a
-                href="/"
-                className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Home
-              </a>
-              <a
-                href="/about"
-                className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                About
-              </a>
-              <a
-                href="/contact"
-                className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Contact
-              </a>
+            <div className="group relative">
+              <img
+                src={assets.profile_icon}
+                className="w-5 cursor-pointer"
+                alt="menu"
+              />
+              <div className="group-hover:block hidden absolute right-0 w-40 p-2 dropdown-menu bg-gray-100 rounded-md text-gray-700 text-center">
+                <p className="cursor-pointer hover:text-black p-2">Profile</p>
+                <p className="cursor-pointer hover:text-black p-2">Orders</p>
+                <p className="cursor-pointer hover:text-black p-2">Logout</p>
+              </div>
             </div>
+            <Link to="/cart" className="relative">
+              <img
+                src={assets.cart_icon}
+                className="w-5 cursor-pointer min-w-5"
+                alt="cart"
+              />
+              <div className="absolute bottom-[-5px] right-[-5px] w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-white text-[10px]">
+                100
+              </div>
+            </Link>
+            <img
+              src={assets.menu_icon}
+              className="w-5 cursor-pointer sm:hidden"
+              alt="menu"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            />
           </div>
         </div>
-
-        {/* Mobile menu */}
-        <div className="hidden md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a
-              href="/"
-              className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
-            >
-              Home
-            </a>
-            <a
-              href="/about"
-              className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
-            >
-              About
-            </a>
-            <a
-              href="/contact"
-              className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
-            >
-              Contact
-            </a>
+        {isMenuOpen && (
+          <div className="sm:hidden absolute flex flex-col items-end gap-2 right-0 left-0 top-20 bg-gray-100 rounded-md text-gray-700 p-4 mx-4 shadow-lg">
+            <NavLink to="/" className="flex flex-col items-center gap-1">
+              <p>Home</p>
+              <hr className="w-full border-none h-[1.5px] bg-gray-700 hidden" />
+            </NavLink>
+            <NavLink to="/about" className="flex flex-col items-center gap-1">
+              <p>About</p>
+              <hr className="w-full border-none h-[1.5px] bg-gray-700 hidden" />
+            </NavLink>
           </div>
-        </div>
-      </nav>
-    </div>
+        )}
+      </div>
+      <div className="h-6"></div>
+    </>
   );
 };
 
