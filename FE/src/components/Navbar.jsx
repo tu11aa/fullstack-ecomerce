@@ -76,7 +76,7 @@ const Navbar = () => {
           </div>
         )}
       </div>
-      <div className="h-6"></div>
+      <div className="h-16"></div>
     </>
   );
 };
