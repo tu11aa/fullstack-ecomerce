@@ -1,12 +1,12 @@
 import React from "react";
+import Hero from "../components/Hero";
 
 const Home = () => {
-  const generateSampleData = () => {
-    const sampleData = Array.from({ length: 100 }, (_, i) => i + 1);
-    return sampleData.map((item) => <h1 key={item}>Item {item}</h1>);
-  };
-
-  return <div className="pt-16">{generateSampleData()}</div>;
+  return (
+    <>
+      <Hero />
+    </>
+  );
 };
 
 export default Home;
