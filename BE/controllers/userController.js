@@ -1,6 +1,7 @@
 import authHelper from "../helpers/authHelper.js";
 import userModel from "../models/userModel.js";
 import validator from "validator";
+import jwt from "jsonwebtoken";
 
 const PASSWORD_MINIMUM_LENGTH = 6;
 
@@ -35,7 +36,28 @@ const loginUser = async (req, res) => {
   }
 };
 
-const adminLogin = async (req, res) => {};
+const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (
+      email === process.env.ADMIN_EMAIL &&
+      password === process.env.ADMIN_PASSWORD
+    ) {
+      const token = authHelper.generateToken(email, "1w");
+      res
+        .status(200)
+        .json({ success: true, message: "Admin login successful", token });
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: "Invalid admin credentials" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 const registerUser = async (req, res) => {
   try {
