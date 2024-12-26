@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// app.use("/api/v1/products", require("./routes/productRoute.js"));
+app.use("/api/v1/products", require("./routes/productRoute.js"));
 app.use("/api/v1/users", require("./routes/userRoute.js"));
 
 app.listen(PORT, () => {
