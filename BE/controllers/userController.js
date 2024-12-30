@@ -1,7 +1,7 @@
 import authHelper from "../helpers/authHelper.js";
 import userModel from "../models/userModel.js";
+import adminModel from "../models/adminModel.js";
 import validator from "validator";
-import jwt from "jsonwebtoken";
 
 const PASSWORD_MINIMUM_LENGTH = 6;
 
@@ -29,7 +29,23 @@ const loginUser = async (req, res) => {
 
     const token = authHelper.generateToken(user._id);
 
-    res.status(200).json({ success: true, message: "Login successful", token });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        cartData: user.cartData,
+      },
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: error.message });
@@ -40,19 +56,34 @@ const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (
-      email === process.env.ADMIN_EMAIL &&
-      password === process.env.ADMIN_PASSWORD
-    ) {
-      const token = authHelper.generateToken(email, "1w");
-      res
-        .status(200)
-        .json({ success: true, message: "Admin login successful", token });
-    } else {
-      res
+    if (!validator.isEmail(email)) {
+      return res
         .status(400)
-        .json({ success: false, message: "Invalid admin credentials" });
+        .json({ success: false, message: "Invalid email address" });
     }
+
+    const admin = await adminModel.findOne({ email });
+
+    if (!admin) {
+      return res.status(400).json({ success: false, message: "Invalid email" });
+    }
+
+    if (!authHelper.comparePassword(password, admin.password)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid password" });
+    }
+
+    const token = authHelper.generateToken(admin._id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.status(200);
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: error.message });
@@ -90,11 +121,9 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
-    const token = authHelper.generateToken(user._id);
-
     res
       .status(201)
-      .json({ success: true, message: "User created successfully", token });
+      .json({ success: true, message: "User created successfully" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: error.message });

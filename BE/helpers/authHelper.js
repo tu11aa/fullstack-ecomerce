@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 const authHelper = {};
 
-authHelper.generateToken = (id, exp = "1d") => {
+authHelper.generateToken = (id, exp = "7d") => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: exp,
   });
