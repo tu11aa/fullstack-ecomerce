@@ -4,6 +4,7 @@ import About from "./pages/About";
 import Navbar from "./components/Navbar";
 import Product from "./pages/Product";
 import Collection from "./pages/Collection";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />
         <Route path="/collection" element={<Collection />} />
         <Route path="/products/:productId" element={<Product />} />
