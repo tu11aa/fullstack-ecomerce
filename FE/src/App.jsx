@@ -1,24 +1,53 @@
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import About from "./pages/About";
 import Navbar from "./components/Navbar";
-import Product from "./pages/Product";
-import Collection from "./pages/Collection";
-import Login from "./pages/Login";
+import { createElement, Suspense } from "react";
+import LoadingSpinner from "./components/LoadingSpinner";
+import ProviderWrapper from "./components/utils/ProviderWrapper";
+import ProtectedRoute from "./components/utils/ProtectedRoute";
+import { routes } from "./routes/RouteConfig";
 
 function App() {
   return (
     <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/collection" element={<Collection />} />
-        <Route path="/products/:productId" element={<Product />} />
-      </Routes>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes>
+          {routes.map(
+            ({
+              path,
+              element: Element,
+              providers = [],
+              isProtected = false,
+            }) => (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  isProtected ? (
+                    <ProtectedRoute>
+                      <ProviderWrapper providers={providers}>
+                        <Element />
+                      </ProviderWrapper>
+                    </ProtectedRoute>
+                  ) : (
+                    <ProviderWrapper providers={providers}>
+                      <Element />
+                    </ProviderWrapper>
+                  )
+                }
+              />
+            )
+          )}
+        </Routes>
+      </Suspense>
     </div>
   );
 }
 
 export default App;
+
+const wrapWithProviders = (Element, providers = []) => (
+  <ProviderWrapper providers={providers}>
+    <Element />
+  </ProviderWrapper>
+);
