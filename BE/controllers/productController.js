@@ -1,9 +1,26 @@
 import productModel from "../models/productModel.js";
 import { v2 as cloudinary } from "cloudinary";
 
+const DEFAULT_CONFIGS = {
+  ITEMS_PER_PAGE: 12,
+  CURRENCY: "USD",
+};
+
+const getConfigs = async (req, res) => {
+  // to be implemented
+};
+
 const getAllProducts = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 1;
+  const currency = req.query.currency || DEFAULT_CONFIGS.CURRENCY;
+
+  const startIndex = (page - 1) * DEFAULT_CONFIGS.ITEMS_PER_PAGE;
+  const endIndex = limit * DEFAULT_CONFIGS.ITEMS_PER_PAGE;
+
   try {
-    const products = await productModel.find();
+    const products = await productModel.find().skip(startIndex).limit(endIndex);
+    //to be implemented price conversion
     res.status(200).json({ success: true, products });
   } catch (error) {
     console.log(error);
