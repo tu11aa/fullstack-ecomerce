@@ -1,12 +1,11 @@
 import React from "react";
 import Hero from "../components/layout/Hero";
 import { useShop } from "../contexts/shop/ShopContext";
-import ProductItemListWithPagination from "../components/product/ProductItemListWithPagination";
 import ProductItemCollection from "../components/product/ProductItemCollection";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const { shopItems, bestsellerItems, latestItems } = useShop().state;
+  const { bestsellerItems, latestItems } = useShop().state;
   const { itemPerPage } = useShop().state.configs;
 
   const navigate = useNavigate();
@@ -34,8 +33,6 @@ const Home = () => {
         title={"Bestseller Items"}
         description={"Description"}
       ></ProductItemCollection>
-
-      {/* <ProductItemListWithPagination items={shopItems} itemPerPage={12} /> */}
     </>
   );
 };

@@ -15,7 +15,7 @@ const ProductItemListWithPagination = ({ items, itemPerPage }) => {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <ProductItemList items={currentItems} />
 
       <Pagination
@@ -23,7 +23,7 @@ const ProductItemListWithPagination = ({ items, itemPerPage }) => {
         currentPage={currentPage}
         handlePageChange={handlePageChange}
       />
-    </>
+    </div>
   );
 };
 

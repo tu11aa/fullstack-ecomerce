@@ -1,25 +1,29 @@
 import React, { useState } from "react";
 import { assets } from "../assets/assets.js";
+import { useShop } from "../contexts/shop/ShopContext.jsx";
+import ProductItemListWithPagination from "../components/product/ProductItemListWithPagination.jsx";
 
 const Collection = () => {
   const [showFilter, setShowFilter] = useState(true);
+  const { shopItems } = useShop().state;
 
   return (
     <div className="flex flex-col md:flex-row gap-1 sm:gap-10 pt-10 border-t">
       {/* Filter Options */}
-      <div className="min-w-60" onClick={() => setShowFilter(!showFilter)}>
-        <p className="m-2 text-xl text-center cursor-poiter">
-          FILTERS
+      <div className="min-w-60">
+        <div className="flex items-center justify-center">
+          <p className="m-2 text-xl text-center cursor-poiter">FILTERS</p>
           <img
             src={assets.dropdown_icon}
-            className={`h-3 sm:hidden ${showFilter && "rotate-90"}`}
+            className={`h-4 ml-auto md:hidden ${showFilter ? "rotate-90" : ""}`}
             alt="dropdown"
+            onClick={() => setShowFilter(!showFilter)}
           />
-        </p>
+        </div>
         {/* Category Filter */}
         <div
           className={`border border-gray-300 pl-5 py-3 mt-6 ${
-            !showFilter && "hidden"
+            !showFilter ? "hidden" : ""
           }`}
         >
           <p className="mb-3 text-sm font-medium">CATEGORIES</p>
@@ -60,7 +64,7 @@ const Collection = () => {
         {/* SubCategory Filter */}
         <div
           className={`border border-gray-300 pl-5 py-3 mt-6 ${
-            !showFilter && "hidden"
+            !showFilter ? "hidden" : ""
           }`}
         >
           <p className="mb-3 text-sm font-medium">CATEGORIES</p>
@@ -99,6 +103,7 @@ const Collection = () => {
           </div>
         </div>
       </div>
+      <ProductItemListWithPagination items={shopItems} itemPerPage={12} />
     </div>
   );
 };
