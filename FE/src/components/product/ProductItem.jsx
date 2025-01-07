@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useShop } from "../../contexts/shop/ShopContext";
 
 const ProductItem = (props) => {
   const { data } = props;
-  const currency = "USD"; //temporary
+  const currency = useShop().state.currency;
 
   return (
     <Link

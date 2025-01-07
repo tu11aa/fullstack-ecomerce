@@ -6,6 +6,15 @@ const ShopContext = createContext(null);
 export const ShopProvider = ({ children }) => {
   const [state, dispatch] = useReducer(shopReducer, initialShopState);
 
+  const updateConfigs = (configs) => {
+    dispatch({ type: SHOP_ACTIONS.UPDATE_CONFIGS, payload: configs });
+  };
+
+  const updateCurrency = (currency) => {
+    dispatch({ type: SHOP_ACTIONS.UPDATE_CURRENCY, payload: currency });
+    localStorage.setItem("currency", currency);
+  };
+
   const addToCart = (product) => {
     dispatch({ type: SHOP_ACTIONS.ADD_TO_CART, payload: product });
   };
@@ -25,6 +34,9 @@ export const ShopProvider = ({ children }) => {
   const value = {
     state,
     dispatch,
+
+    updateCurrency,
+
     addToCart,
     removeFromCart,
     clearCart,

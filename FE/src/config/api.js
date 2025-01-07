@@ -8,4 +8,12 @@ const api = axios.create({
   },
 });
 
+api.interceptors.request.use((config) => {
+  const currency = localStorage.getItem("currency");
+
+  config.headers["X-Preferred-Currency"] = currency;
+
+  return config;
+});
+
 export default api;

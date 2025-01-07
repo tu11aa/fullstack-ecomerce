@@ -1,7 +1,7 @@
+import { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import { createElement, Suspense } from "react";
-import LoadingSpinner from "./components/LoadingSpinner";
+import Navbar from "./components/layout/Navbar";
+import LoadingSpinner from "./components/common/LoadingSpinner";
 import ProviderWrapper from "./components/utils/ProviderWrapper";
 import ProtectedRoute from "./components/utils/ProtectedRoute";
 import { routes } from "./routes/RouteConfig";

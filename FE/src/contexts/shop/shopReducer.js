@@ -1,22 +1,56 @@
+import { products } from "../../assets/assets";
+
 export const SHOP_ACTIONS = {
+  UPDATE_CONFIGS: "UPDATE_CONFIGS",
+  UPDATE_CURRENCY: "UPDATE_CURRENCY",
+
+  SET_PRODUCTS: "SET_PRODUCTS",
+  SET_LATEST_PRODUCTS: "SET_LATEST_PRODUCTS",
+  SET_BESTSELLER_PRODUCTS: "SET_BESTSELLER_PRODUCTS",
+
   ADD_TO_CART: "ADD_TO_CART",
   REMOVE_FROM_CART: "REMOVE_FROM_CART",
   CLEAR_CART: "CLEAR_CART",
+
   CHECKOUT: "CHECKOUT",
-  SET_CURRENCY: "SET_CURRENCY",
 };
 
+const DEFAULT_CURRENCY = "USD";
+
 export const initialShopState = {
-  shopItems: [],
+  configs: {
+    itemPerPage: 12,
+  },
+  currency: localStorage.getItem("currency") || DEFAULT_CURRENCY,
+  shopItems: products,
+  latestItems: [],
+  bestsellerItems: [],
   cartItems: [],
   totalPrice: 0,
-  currency: "USD",
   isLoading: false,
   error: null,
 };
 
 export const shopReducer = (state, action) => {
   switch (action.type) {
+    case SHOP_ACTIONS.UPDATE_CONFIGS:
+      return {
+        ...state,
+        config: {
+          ...state.configs,
+          ...action.payload,
+        },
+      };
+    case SHOP_ACTIONS.UPDATE_CURRENCY:
+      return {
+        ...state,
+        currency: action.payload,
+      };
+    case SHOP_ACTIONS.SET_PRODUCTS:
+      return {
+        ...state,
+        shopItems: action.payload,
+      };
     case SHOP_ACTIONS.ADD_TO_CART:
       return {
         ...state,
@@ -42,11 +76,6 @@ export const shopReducer = (state, action) => {
         ...state,
         isLoading: true,
         error: null,
-      };
-    case SHOP_ACTIONS.SET_CURRENCY:
-      return {
-        ...state,
-        currency: action.payload,
       };
     default:
       return state;
