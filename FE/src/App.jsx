@@ -45,9 +45,3 @@ function App() {
 }
 
 export default App;
-
-const wrapWithProviders = (Element, providers = []) => (
-  <ProviderWrapper providers={providers}>
-    <Element />
-  </ProviderWrapper>
-);
