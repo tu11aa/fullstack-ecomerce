@@ -11,19 +11,21 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <>
+    <div className="flex flex-col gap-12">
       <Hero />
       <ProductItemCollection
         items={latestItems}
         itemPerPage={itemPerPage}
         title={"Latest Items"}
-        description={"Description"}
+        description={
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia. Desunt mollit anim id est laborum."
+        }
       >
         <p
-          className="text-right cursor-pointer"
+          className="text-right cursor-pointer underline"
           onClick={() => navigate("/collection")}
         >
-          More...
+          See More...
         </p>
       </ProductItemCollection>
 
@@ -31,9 +33,11 @@ const Home = () => {
         items={bestsellerItems}
         itemPerPage={itemPerPage}
         title={"Bestseller Items"}
-        description={"Description"}
-      ></ProductItemCollection>
-    </>
+        description={
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia. Desunt mollit anim id est laborum."
+        }
+      />
+    </div>
   );
 };
 

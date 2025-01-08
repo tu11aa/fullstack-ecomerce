@@ -10,10 +10,10 @@ const ProductItemCollection = ({
   children,
 }) => {
   return (
-    <>
-      <div className="flex flex-col items-center">
-        <h1 className="text-2xl font-bold text-gray-800 mb-1">{title}</h1>
-        <p className="text-gray-600 mb-1">{description}</p>
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-col items-center gap-2">
+        <h1 className="text-4xl font-bold text-gray-800">{title}</h1>
+        <p className="text-gray-600">{description}</p>
       </div>
       {children && children}
       {itemPerPage === 0 || items.length < itemPerPage ? (
@@ -24,7 +24,7 @@ const ProductItemCollection = ({
           itemPerPage={itemPerPage}
         />
       )}
-    </>
+    </div>
   );
 };
 
