@@ -4,7 +4,7 @@ import ProductItemListWithPagination from "./ProductItemListWithPagination";
 
 const ProductItemCollection = ({
   items,
-  itemPerPage = 0,
+  itemsPerPage = 0,
   title,
   description,
   children,
@@ -16,12 +16,12 @@ const ProductItemCollection = ({
         <p className="text-gray-600">{description}</p>
       </div>
       {children && children}
-      {itemPerPage === 0 || items.length < itemPerPage ? (
+      {itemsPerPage === 0 || items.length < itemsPerPage ? (
         <ProductItemList items={items} />
       ) : (
         <ProductItemListWithPagination
           items={items}
-          itemPerPage={itemPerPage}
+          itemsPerPage={itemsPerPage}
         />
       )}
     </div>

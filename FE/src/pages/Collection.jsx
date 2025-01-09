@@ -103,7 +103,7 @@ const Collection = () => {
           </div>
         </div>
       </div>
-      <ProductItemListWithPagination items={shopItems} itemPerPage={12} />
+      <ProductItemListWithPagination items={shopItems} itemsPerPage={12} />
     </div>
   );
 };

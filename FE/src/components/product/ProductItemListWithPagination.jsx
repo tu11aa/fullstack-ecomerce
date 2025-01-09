@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import ProductItemList from "./ProductItemList";
 import Pagination from "../common/Pagination";
 
-const ProductItemListWithPagination = ({ items, itemPerPage }) => {
+const ProductItemListWithPagination = ({ items, itemsPerPage }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const pageCount = Math.ceil(items.length / itemPerPage);
+  const pageCount = Math.ceil(items.length / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemPerPage;
-  const endIndex = startIndex + itemPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
   const currentItems = items.slice(startIndex, endIndex);
 
   const handlePageChange = (pageNum) => {

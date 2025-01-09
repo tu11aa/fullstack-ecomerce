@@ -19,7 +19,7 @@ const DEFAULT_CURRENCY = "USD";
 
 export const initialShopState = {
   configs: {
-    itemPerPage: 12,
+    itemsPerPage: 12,
   },
   currency: localStorage.getItem("currency") || DEFAULT_CURRENCY,
   shopItems: products,
