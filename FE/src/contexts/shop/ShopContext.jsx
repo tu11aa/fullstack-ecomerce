@@ -15,6 +15,10 @@ export const ShopProvider = ({ children }) => {
     localStorage.setItem("currency", currency);
   };
 
+  const setShopFilters = (filters) => {
+    dispatch({ type: SHOP_ACTIONS.SET_SHOP_FILTERS, payload: filters });
+  };
+
   const addToCart = (product) => {
     dispatch({ type: SHOP_ACTIONS.ADD_TO_CART, payload: product });
   };
@@ -36,6 +40,8 @@ export const ShopProvider = ({ children }) => {
     dispatch,
 
     updateCurrency,
+
+    setShopFilters,
 
     addToCart,
     removeFromCart,

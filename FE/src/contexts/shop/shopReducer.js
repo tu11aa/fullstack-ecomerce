@@ -7,6 +7,7 @@ export const SHOP_ACTIONS = {
   SET_PRODUCTS: "SET_PRODUCTS",
   SET_LATEST_PRODUCTS: "SET_LATEST_PRODUCTS",
   SET_BESTSELLER_PRODUCTS: "SET_BESTSELLER_PRODUCTS",
+  SET_SHOP_FILTERS: "SET_SHOP_FILTERS",
 
   ADD_TO_CART: "ADD_TO_CART",
   REMOVE_FROM_CART: "REMOVE_FROM_CART",
@@ -20,13 +21,19 @@ const DEFAULT_CURRENCY = "USD";
 export const initialShopState = {
   configs: {
     itemsPerPage: 12,
+    shop_filters: {},
+  },
+  shop: {
+    items: products,
+    latestItems: products.slice(0, 14),
+    bestsellerItems: products.filter((item) => item.bestseller),
+    filters: {},
+  },
+  cart: {
+    items: [],
+    totalPrice: 0,
   },
   currency: localStorage.getItem("currency") || DEFAULT_CURRENCY,
-  shopItems: products,
-  latestItems: products.slice(0, 14),
-  bestsellerItems: products.filter((item) => item.bestseller),
-  cartItems: [],
-  totalPrice: 0,
   isLoading: false,
   error: null,
 };
@@ -50,6 +57,14 @@ export const shopReducer = (state, action) => {
       return {
         ...state,
         shopItems: action.payload,
+      };
+    case SHOP_ACTIONS.SET_SHOP_FILTERS:
+      return {
+        ...state,
+        shop: {
+          ...state.shop,
+          filters: action.payload,
+        },
       };
     case SHOP_ACTIONS.ADD_TO_CART:
       return {
