@@ -5,7 +5,7 @@ import ProductItemListWithPagination from "../components/product/ProductItemList
 import CategorySelectBox from "../components/layout/CategorySelectBox.jsx";
 
 const Collection = () => {
-  const { shop_filters } = useShop().state.configs;
+  const { shop_categories } = useShop().state.configs;
   const { items, filters } = useShop().state.shop;
   const { setShopFilters } = useShop();
 
@@ -29,10 +29,10 @@ const Collection = () => {
           />
         </div>
 
-        {Object.keys(shop_filters).map((key, index) => (
+        {Object.keys(shop_categories).map((key, index) => (
           <CategorySelectBox
             key={index}
-            category={shop_filters[key]}
+            category={shop_categories[key]}
             filters={filters}
             setFilters={setShopFilters}
             showFilter={showFilter}

@@ -1,4 +1,5 @@
 import { products } from "../../assets/assets";
+import { SHOP_CONSTANT } from "../../mocks/shopConstant";
 
 export const SHOP_ACTIONS = {
   UPDATE_CONFIGS: "UPDATE_CONFIGS",
@@ -21,7 +22,7 @@ const DEFAULT_CURRENCY = "USD";
 export const initialShopState = {
   configs: {
     itemsPerPage: 12,
-    shop_filters: {},
+    shop_categories: SHOP_CONSTANT.shop_categories,
   },
   shop: {
     items: products,
