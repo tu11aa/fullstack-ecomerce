@@ -15,10 +15,10 @@ createRoot(document.getElementById("root")).render(
       <ShopProvider>
         <QueryClientProvider client={queryClient}>
           <App />
+          {import.meta.env.MODE === "development" && (
+            <ReactQueryDevtools initialIsOpen={false} />
+          )}
         </QueryClientProvider>
-        {import.meta.env.MODE === "development" && (
-          <ReactQueryDevtools initialIsOpen={false} />
-        )}
       </ShopProvider>
     </AuthProvider>
   </BrowserRouter>
