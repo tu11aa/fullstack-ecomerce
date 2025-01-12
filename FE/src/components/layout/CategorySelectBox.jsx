@@ -1,21 +1,16 @@
 import React from "react";
 
-const CategorySelectBox = ({
-  category,
-  selectedValues,
-  setSelectedValues,
-  showFilter,
-}) => {
+const CategorySelectBox = ({ category, values, onChange_, showFilter }) => {
   const { fields } = category;
 
   const handleChecked = (e) => {
-    if (selectedValues.includes(e.target.value)) {
-      setSelectedValues(
+    if (values.includes(e.target.value)) {
+      onChange_(
         category.name,
-        selectedValues.filter((value) => value !== e.target.value)
+        values.filter((value) => value !== e.target.value)
       );
     } else {
-      setSelectedValues(category.name, [...selectedValues, e.target.value]);
+      onChange_(category.name, [...values, e.target.value]);
     }
   };
 
@@ -34,11 +29,9 @@ const CategorySelectBox = ({
               className="w-3"
               type="checkbox"
               value={field.value}
-              name={field.name}
+              name={field.value}
               onChange={handleChecked}
-              checked={
-                selectedValues ? selectedValues.includes(field.value) : false
-              }
+              checked={values ? values.includes(field.value) : false}
             />
             {field.displayName}
           </p>

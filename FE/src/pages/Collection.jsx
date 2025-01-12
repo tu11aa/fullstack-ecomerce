@@ -11,25 +11,12 @@ const Collection = () => {
 
   const [showFilter, setShowFilter] = useState(true);
 
-  const setSelectedValues = (category, selectedValues) => {
+  const handleSelectBoxChange = (category, selectedValues) => {
     setShopFilters({
       ...filters,
       [category]: selectedValues,
     });
   };
-
-  useEffect(() => {
-    const shopFilters = {
-      ...filters,
-    };
-
-    for (const [_, value] of Object.entries(shop_categories)) {
-      if (shopFilters[value.name] === undefined) {
-        shopFilters[value.name] = [];
-      }
-    }
-    setShopFilters(shopFilters);
-  }, []);
 
   return (
     <div className="flex flex-col md:flex-row gap-1 sm:gap-10 pt-10 border-t">
@@ -45,12 +32,14 @@ const Collection = () => {
           />
         </div>
 
-        {Object.keys(shop_categories).map((key, index) => (
+        {Object.entries(shop_categories).map(([_, shop_category], index) => (
           <CategorySelectBox
             key={index}
-            category={shop_categories[key]}
-            selectedValues={filters[shop_categories[key].name]}
-            setSelectedValues={setSelectedValues}
+            category={shop_category}
+            values={
+              filters[shop_category.name] ? filters[shop_category.name] : []
+            }
+            onChange_={handleSelectBoxChange}
             showFilter={showFilter}
           />
         ))}
