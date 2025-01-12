@@ -5,6 +5,7 @@ import {
   addProduct,
   // updateProduct,
   deleteProduct,
+  getConfigs,
 } from "../controllers/productController.js";
 import upload from "../middlewares/multer.js";
 import { adminProtect } from "../middlewares/authMiddleware.js";
@@ -12,6 +13,7 @@ import { adminProtect } from "../middlewares/authMiddleware.js";
 const productRouter = express.Router();
 
 productRouter.get("/", getProducts);
+productRouter.get("/configs", getConfigs);
 productRouter.post(
   "add",
   adminProtect,

@@ -9,6 +9,19 @@ const DEFAULT_CONFIGS = {
   SORT_ORDER: "desc",
 };
 
+const getConfigs = async (req, res) => {
+  try {
+    const configs = {
+      shop_categories: SHOP_CATEGORIES,
+      itemsPerPage: DEFAULT_CONFIGS.ITEMS_PER_PAGE,
+    };
+    res.status(200).json({ success: true, configs });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 const getProducts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || DEFAULT_CONFIGS.ITEMS_PER_PAGE;
