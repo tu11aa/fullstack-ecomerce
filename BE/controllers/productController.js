@@ -60,6 +60,31 @@ const getProducts = async (req, res) => {
   }
 };
 
+const getLatestProducts = async (_, res) => {
+  try {
+    const products = await productModel
+      .find()
+      .sort({ date: -1 })
+      .limit(DEFAULT_CONFIGS.ITEMS_PER_PAGE);
+
+    res.status(200).json({ success: true, products });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const getBestSellerProducts = async (_, res) => {
+  try {
+    const products = await productModel.find({ bestSeller: true });
+
+    res.status(500).json({ success: true, products });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -164,6 +189,8 @@ const deleteProduct = async (req, res) => {
 export {
   getConfigs,
   getProducts,
+  getLatestProducts,
+  getBestSellerProducts,
   getProductById,
   addProduct,
   //   updateProduct,
