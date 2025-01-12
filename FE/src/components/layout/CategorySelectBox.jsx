@@ -1,22 +1,21 @@
 import React from "react";
 
-const CategorySelectBox = ({ category, filters, setFilters, showFilter }) => {
-  const selectedValues = filters[category.name] || [];
+const CategorySelectBox = ({
+  category,
+  selectedValues,
+  setSelectedValues,
+  showFilter,
+}) => {
   const { fields } = category;
 
   const handleChecked = (e) => {
     if (selectedValues.includes(e.target.value)) {
-      setFilters({
-        ...filters,
-        [category.name]: selectedValues.filter(
-          (value) => value !== e.target.value
-        ),
-      });
+      setSelectedValues(
+        category.name,
+        selectedValues.filter((value) => value !== e.target.value)
+      );
     } else {
-      setFilters({
-        ...filters,
-        [category.name]: [...selectedValues, e.target.value],
-      });
+      setSelectedValues(category.name, [...selectedValues, e.target.value]);
     }
   };
 
@@ -37,6 +36,9 @@ const CategorySelectBox = ({ category, filters, setFilters, showFilter }) => {
               value={field.value}
               name={field.name}
               onChange={handleChecked}
+              checked={
+                selectedValues ? selectedValues.includes(field.value) : false
+              }
             />
             {field.displayName}
           </p>
