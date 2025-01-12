@@ -13,13 +13,9 @@ import { adminProtect } from "../middlewares/authMiddleware.js";
 const productRouter = express.Router();
 
 productRouter.get("/", getProducts);
+
 productRouter.get("/configs", getConfigs);
-productRouter.post(
-  "add",
-  adminProtect,
-  upload.array("images", (maxCount = 4)),
-  addProduct
-);
+productRouter.post("add", adminProtect, upload.array("images", 4), addProduct);
 productRouter.get("/:id", getProductById);
 // productRouter.put("/:id", updateProduct);
 productRouter.delete("/:id", adminProtect, deleteProduct);
