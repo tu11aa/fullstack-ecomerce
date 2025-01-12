@@ -1,7 +1,10 @@
+import dotenv from "dotenv";
 import authHelper from "../helpers/authHelper.js";
 import userModel from "../models/userModel.js";
 import adminModel from "../models/adminModel.js";
 import validator from "validator";
+
+dotenv.config();
 
 const PASSWORD_MINIMUM_LENGTH = 6;
 

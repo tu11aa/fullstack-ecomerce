@@ -1,5 +1,8 @@
+import dotenv from "dotenv";
 import authHelper from "../helpers/authHelper.js";
 import userModel from "../models/userModel.js";
+
+dotenv.config();
 
 const protect = async (req, res, next) => {
   const token = req.cookies.token;
