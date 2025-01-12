@@ -5,6 +5,8 @@ import Navbar from "./components/layout/Navbar";
 import Product from "./pages/Product";
 import Collection from "./pages/Collection";
 import Login from "./pages/Login";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 
 function App() {
   return (
@@ -17,6 +19,7 @@ function App() {
         <Route path="/collection" element={<Collection />} />
         <Route path="/products/:productId" element={<Product />} />
       </Routes>
+      <ToastContainer />
     </div>
   );
 }
