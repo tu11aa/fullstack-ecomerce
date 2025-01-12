@@ -5,7 +5,7 @@ import ProductItemCollection from "../components/product/ProductItemCollection";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const { bestsellerItems, latestItems } = useShop().state;
+  const { bestsellerItems, latestItems } = useShop().state.shop;
   const { itemsPerPage } = useShop().state.configs;
 
   const navigate = useNavigate();
