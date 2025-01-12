@@ -1,9 +1,9 @@
 import express from "express";
 import {
-  getAllProducts,
+  getProducts,
   getProductById,
   addProduct,
-  //   updateProduct,
+  // updateProduct,
   deleteProduct,
 } from "../controllers/productController.js";
 import upload from "../middlewares/multer.js";
@@ -11,7 +11,7 @@ import { adminProtect } from "../middlewares/authMiddleware.js";
 
 const productRouter = express.Router();
 
-productRouter.get("/", getAllProducts);
+productRouter.get("/", getProducts);
 productRouter.post(
   "add",
   adminProtect,

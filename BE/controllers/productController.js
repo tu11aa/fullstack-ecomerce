@@ -1,27 +1,46 @@
+import { uploadImages } from "../helpers/productHelper.js";
+import { SHOP_CATEGORIES } from "../libs/constant.js";
 import productModel from "../models/productModel.js";
-import { v2 as cloudinary } from "cloudinary";
 
 const DEFAULT_CONFIGS = {
   ITEMS_PER_PAGE: 12,
   CURRENCY: "USD",
+  SORT_FIELD: "date",
+  SORT_ORDER: "desc",
 };
 
-const getConfigs = async (req, res) => {
-  // to be implemented
-};
-
-const getAllProducts = async (req, res) => {
+const getProducts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 1;
+  const limit = parseInt(req.query.limit) || DEFAULT_CONFIGS.ITEMS_PER_PAGE;
+
   const currency = req.query.currency || DEFAULT_CONFIGS.CURRENCY;
 
+  const filter = JSON.parse(req.query.filter) || {};
+
+  const search = req.query.search || "";
+  if (search) {
+    filter.name = { $regex: search, $options: "i" };
+  }
+
+  const sortField = req.query.sortField || DEFAULT_CONFIGS.SORT_FIELD;
+  const sortOrder = req.query.sortOrder || DEFAULT_CONFIGS.SORT_ORDER;
+  const sort = { [sortField]: sortOrder === "asc" ? 1 : -1 };
+
   const startIndex = (page - 1) * DEFAULT_CONFIGS.ITEMS_PER_PAGE;
-  const endIndex = limit * DEFAULT_CONFIGS.ITEMS_PER_PAGE;
+  const endIndex = startIndex + limit;
 
   try {
-    const products = await productModel.find().skip(startIndex).limit(endIndex);
+    const products = await productModel
+      .find(filter)
+      .sort(sort)
+      .skip(startIndex)
+      .limit(endIndex);
+
     //to be implemented price conversion
-    res.status(200).json({ success: true, products });
+
+    const total = await products.countDocuments(filter);
+
+    res.status(200).json({ success: true, products, total });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: error.message });
@@ -130,20 +149,10 @@ const deleteProduct = async (req, res) => {
 };
 
 export {
-  getAllProducts,
+  getConfigs,
+  getProducts,
   getProductById,
   addProduct,
   //   updateProduct,
   deleteProduct,
-};
-
-const uploadImages = async (images) => {
-  let imageUrls = await Promise.all(
-    images.map(async (image) => {
-      let result = await cloudinary.uploader.upload(image.path, {
-        resource_type: "image",
-      });
-      return result.secure_url;
-    })
-  );
 };
