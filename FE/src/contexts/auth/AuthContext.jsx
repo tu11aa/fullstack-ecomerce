@@ -4,7 +4,7 @@ import api from "../../config/api";
 
 const AuthContext = createContext(null);
 
-export const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
   const login = async (credentials) => {
@@ -46,3 +46,5 @@ export const useAuth = () => {
 
   return context;
 };
+
+export default AuthProvider;

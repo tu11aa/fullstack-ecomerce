@@ -3,8 +3,10 @@ import { shopReducer, initialShopState, SHOP_ACTIONS } from "./shopReducer";
 
 const ShopContext = createContext(null);
 
-export const ShopProvider = ({ children }) => {
+const ShopProvider = ({ children }) => {
   const [state, dispatch] = useReducer(shopReducer, initialShopState);
+
+  console.log("Reset ShopContext", state);
 
   const updateConfigs = (configs) => {
     dispatch({ type: SHOP_ACTIONS.UPDATE_CONFIGS, payload: configs });
@@ -59,3 +61,5 @@ export const useShop = () => {
   }
   return context;
 };
+
+export default ShopProvider;
