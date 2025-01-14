@@ -6,8 +6,6 @@ const ShopContext = createContext(null);
 const ShopProvider = ({ children }) => {
   const [state, dispatch] = useReducer(shopReducer, initialShopState);
 
-  console.log("Reset ShopContext", state);
-
   const updateConfigs = (configs) => {
     dispatch({ type: SHOP_ACTIONS.UPDATE_CONFIGS, payload: configs });
   };

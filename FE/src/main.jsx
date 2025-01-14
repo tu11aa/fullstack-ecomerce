@@ -11,15 +11,15 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <AuthProvider>
-      <ShopProvider>
-        <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ShopProvider>
           <App />
           {import.meta.env.MODE === "development" && (
             <ReactQueryDevtools initialIsOpen={false} />
           )}
-        </QueryClientProvider>
-      </ShopProvider>
-    </AuthProvider>
+        </ShopProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   </BrowserRouter>
 );

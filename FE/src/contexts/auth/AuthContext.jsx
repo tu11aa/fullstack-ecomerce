@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer } from "react";
-import { authReducer, initialAuthState } from "./authReducer";
+import { authReducer, initialAuthState, AUTH_ACTIONS } from "./authReducer";
 import api from "../../config/api";
 
 const AuthContext = createContext(null);
@@ -11,15 +11,43 @@ const AuthProvider = ({ children }) => {
     dispatch({ type: AUTH_ACTIONS.LOGIN_START });
 
     try {
-      const user = await api.post("/login", credentials);
-      dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: user });
+      // const { user, message } = await api.post("users/login", credentials).data;
+      const { user, message } = (await api.post("users/login", credentials))
+        .data;
+
+      dispatch({
+        type: AUTH_ACTIONS.LOGIN_SUCCESS,
+        payload: { user, message },
+      });
     } catch (error) {
-      dispatch({ type: AUTH_ACTIONS.LOGIN_FAILURE, payload: error.message });
+      dispatch({ type: AUTH_ACTIONS.LOGIN_FAILURE, payload: error });
+    }
+  };
+
+  const register = async (credentials) => {
+    dispatch({ type: AUTH_ACTIONS.REGISTER_START });
+
+    try {
+      const { message } = (await api.post("users/register", credentials)).data;
+
+      dispatch({ type: AUTH_ACTIONS.REGISTER_SUCCESS, payload: message });
+    } catch (error) {
+      dispatch({ type: AUTH_ACTIONS.REGISTER_FAILURE, payload: error });
     }
   };
 
   const logout = () => {
     dispatch({ type: AUTH_ACTIONS.LOGOUT });
+  };
+
+  const getUser = async () => {
+    try {
+      const { user } = (await api.get("/users/me")).data;
+
+      dispatch({ type: AUTH_ACTIONS.UPDATE_USER, payload: user });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const updateUser = (user) => {
@@ -30,7 +58,9 @@ const AuthProvider = ({ children }) => {
     state,
     dispatch,
     login,
+    register,
     logout,
+    getUser,
     updateUser,
   };
 

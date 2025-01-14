@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, Link, useLocation } from "react-router-dom";
+import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { assets } from "../../assets/assets.js";
+import { useAuth } from "../../contexts/auth/AuthContext";
 
 const Navbar = () => {
+  const { logout } = useAuth();
+  const { user } = useAuth().state;
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -49,9 +55,29 @@ const Navbar = () => {
                 alt="menu"
               />
               <div className="group-hover:block hidden absolute right-0 w-40 p-2 dropdown-menu bg-gray-100 rounded-md text-gray-700 text-center">
-                <p className="cursor-pointer hover:text-black p-2">Profile</p>
-                <p className="cursor-pointer hover:text-black p-2">Orders</p>
-                <p className="cursor-pointer hover:text-black p-2">Logout</p>
+                {user ? (
+                  <>
+                    <p className="cursor-pointer hover:text-black p-2">
+                      Profile
+                    </p>
+                    <p className="cursor-pointer hover:text-black p-2">
+                      Orders
+                    </p>
+                    <p
+                      className="cursor-pointer hover:text-black p-2"
+                      onClick={() => logout()}
+                    >
+                      Logout
+                    </p>
+                  </>
+                ) : (
+                  <p
+                    className="cursor-pointer hover:text-black p-2"
+                    onClick={() => navigate("/login")}
+                  >
+                    Login
+                  </p>
+                )}
               </div>
             </div>
             <Link to="/cart" className="relative">
