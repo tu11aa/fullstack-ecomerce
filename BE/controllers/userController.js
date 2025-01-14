@@ -8,6 +8,14 @@ dotenv.config();
 
 const PASSWORD_MINIMUM_LENGTH = 6;
 
+const getMe = async (req, res) => {
+  try {
+    res.status(200).json({ success: true, user: req.user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -24,7 +32,7 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid email" });
     }
 
-    if (!authHelper.comparePassword(password, user.password)) {
+    if (!(await authHelper.comparePassword(password, user.password))) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid password" });
@@ -32,7 +40,7 @@ const loginUser = async (req, res) => {
 
     const token = authHelper.generateToken(user._id);
 
-    res.cookie("token", token, {
+    res.cookie("auth_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
@@ -116,13 +124,14 @@ const registerUser = async (req, res) => {
       });
     }
 
-    const hashedPassword = authHelper.hashPassword(password);
+    const hashedPassword = await authHelper.hashPassword(password);
 
     const user = await userModel.create({
       name,
       email,
       password: hashedPassword,
     });
+    console.log("Created user \n", user);
 
     res
       .status(201)
@@ -134,20 +143,19 @@ const registerUser = async (req, res) => {
 };
 
 const logoutUser = async (req, res) => {
-  // try {
-  //   const { token } = req.cookies;
-  //   if (!token) {
-  //     return res
-  //       .status(400)
-  //       .json({ success: false, message: "No token provided" });
-  //   }
-  //   const userId = authHelper.decodeToken(token);
-  //   await userModel.findByIdAndDelete(userId);
-  //   res.status(200).json({ success: true, message: "User logged out" });
-  // } catch (error) {
-  //   console.log(error);
-  //   res.status(500).json({ success: false, message: error.message });
-  // }
+  try {
+    res.cookie("auth_token", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      expires: new Date(0),
+      sameSite: "strict",
+    });
+
+    res.status(200).json({ success: true, message: "Logged out successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
 
-export { loginUser, registerUser, logoutUser, adminLogin };
+export { getMe, loginUser, registerUser, logoutUser, adminLogin };

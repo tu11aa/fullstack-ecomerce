@@ -5,13 +5,13 @@ import userModel from "../models/userModel.js";
 dotenv.config();
 
 const protect = async (req, res, next) => {
-  const token = req.cookies.token;
+  const token = req.cookies.auth_token;
   if (!token) {
     return res.status(401).json({ success: false, message: "Unauthorized" });
   }
   try {
     const userId = authHelper.decodeToken(token);
-    const user = await userModel.findById(userId);
+    const user = await userModel.findById(userId).select("-password");
     if (!user) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
