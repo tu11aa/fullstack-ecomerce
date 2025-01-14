@@ -22,9 +22,9 @@ const importantLinks = [
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 text-gray-700 py-10 px-6">
+    <footer className="bg-gray-100 text-gray-700 py-8 px-6 mt-8 shadow-top">
       {/* Logo Section */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="max-w-fit mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="space-y-6">
           <div className="flex items-center space-x-2">
             <img src={assets.logo} className="w-36" alt="logo" />
@@ -97,7 +97,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="max-w-full mx-auto mt-8 pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-sm">© 2025 FOREVER. All Rights Reserved.</p>
 
         {/* Payment Methods */}
