@@ -6,35 +6,51 @@ import Product from "./pages/Product";
 import Collection from "./pages/Collection";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Footer from "./components/layout/Footer";
+import Cart from "./pages/Cart";
+import ProtectedRoute from "./components/utils/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import { useAuth } from "./contexts/auth/AuthContext";
 import { useEffect } from "react";
-import Footer from "./components/layout/Footer";
+import LoadingSpinner from "./components/common/LoadingSpinner";
 
 function App() {
   const { getUser } = useAuth();
+  const { isLoading } = useAuth().state;
 
   useEffect(() => {
     getUser();
   }, []);
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
-    <>
-      <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
-        <Navbar />
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <div className="flex-1 px-2 sm:px-[1vw] md:px-[3vw] lg:px-[5vw]">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/about" element={<About />} />
           <Route path="/collection" element={<Collection />} />
+          <Route
+            path="/user/:id/cart"
+            element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/products/:productId" element={<Product />} />
         </Routes>
         <ToastContainer />
       </div>
       <Footer />
-    </>
+    </div>
   );
 }
 
