@@ -1,15 +1,12 @@
 export const AUTH_ACTIONS = {
-  LOGIN_START: "LOGIN_START",
+  START: "START",
+  SUCCESS: "SUCCESS",
+  FAILURE: "FAILURE",
+
   LOGIN_SUCCESS: "LOGIN_SUCCESS",
-  LOGIN_FAILURE: "LOGIN_FAILURE",
+  LOGOUT_SUCCESS: "LOGOUT_SUCCESS",
 
-  REGISTER_START: "REGISTER_START",
-  REGISTER_SUCCESS: "REGISTER_SUCCESS",
-  REGISTER_FAILURE: "REGISTER_FAILURE",
-
-  LOGOUT: "LOGOUT",
-
-  UPDATE_USER: "UPDATE_USER",
+  UPDATE_USER_SUCCESS: "UPDATE_USER_SUCCESS",
 
   RESET: "RESET",
 };
@@ -23,59 +20,45 @@ export const initialAuthState = {
 
 export const authReducer = (state, action) => {
   switch (action.type) {
-    case AUTH_ACTIONS.LOGIN_START:
+    case AUTH_ACTIONS.START:
       return {
         ...state,
         isLoading: true,
         error: null,
-        message: "Loging in ...",
+        message: action.payload || "",
       };
+    case AUTH_ACTIONS.SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        message: action.payload || "",
+      };
+    case AUTH_ACTIONS.FAILURE:
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
+        message: "",
+      };
+
     case AUTH_ACTIONS.LOGIN_SUCCESS:
       return {
         ...state,
         isLoading: false,
         ...action.payload,
       };
-    case AUTH_ACTIONS.LOGIN_FAILURE:
-      return {
-        ...state,
-        isLoading: false,
-        error: action.payload,
-      };
 
-    case AUTH_ACTIONS.REGISTER_START:
+    case AUTH_ACTIONS.LOGOUT_SUCCESS:
       return {
-        ...state,
-        isLoading: true,
-        error: null,
-        message: "Registering ...",
-      };
-    case AUTH_ACTIONS.REGISTER_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        error: null,
+        ...initialAuthState,
         message: action.payload,
       };
-    case AUTH_ACTIONS.REGISTER_FAILURE:
+
+    case AUTH_ACTIONS.UPDATE_USER_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
-      };
-
-    case AUTH_ACTIONS.LOGOUT:
-      return {
-        ...state,
-        user: null,
-        isLoading: false,
-        error: null,
-        message: "Logged out",
-      };
-
-    case AUTH_ACTIONS.UPDATE_USER:
-      return {
-        ...state,
         user: action.payload,
       };
 

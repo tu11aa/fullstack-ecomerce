@@ -8,10 +8,9 @@ const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
   const login = async (credentials) => {
-    dispatch({ type: AUTH_ACTIONS.LOGIN_START });
+    dispatch({ type: AUTH_ACTIONS.START });
 
     try {
-      // const { user, message } = await api.post("users/login", credentials).data;
       const { user, message } = (await api.post("users/login", credentials))
         .data;
 
@@ -20,33 +19,43 @@ const AuthProvider = ({ children }) => {
         payload: { user, message },
       });
     } catch (error) {
-      dispatch({ type: AUTH_ACTIONS.LOGIN_FAILURE, payload: error });
+      dispatch({ type: AUTH_ACTIONS.FAILURE, payload: error });
     }
   };
 
   const register = async (credentials) => {
-    dispatch({ type: AUTH_ACTIONS.REGISTER_START });
+    dispatch({ type: AUTH_ACTIONS.START });
 
     try {
       const { message } = (await api.post("users/register", credentials)).data;
 
-      dispatch({ type: AUTH_ACTIONS.REGISTER_SUCCESS, payload: message });
+      dispatch({ type: AUTH_ACTIONS.SUCCESS, payload: message });
     } catch (error) {
-      dispatch({ type: AUTH_ACTIONS.REGISTER_FAILURE, payload: error });
+      dispatch({ type: AUTH_ACTIONS.FAILURE, payload: error });
     }
   };
 
-  const logout = () => {
-    dispatch({ type: AUTH_ACTIONS.LOGOUT });
+  const logout = async () => {
+    dispatch({ type: AUTH_ACTIONS.START });
+
+    try {
+      const { message } = await api.post("/users/logout");
+
+      dispatch({ type: AUTH_ACTIONS.LOGOUT_SUCCESS, payload: message });
+    } catch (error) {
+      dispatch({ type: AUTH_ACTIONS.FAILURE, payload: error });
+    }
   };
 
   const getUser = async () => {
+    dispatch({ type: AUTH_ACTIONS.START });
+
     try {
       const { user } = (await api.get("/users/me")).data;
 
-      dispatch({ type: AUTH_ACTIONS.UPDATE_USER, payload: user });
+      dispatch({ type: AUTH_ACTIONS.UPDATE_USER_SUCCESS, payload: user });
     } catch (error) {
-      console.log(error);
+      dispatch({ type: AUTH_ACTIONS.FAILURE, payload: error });
     }
   };
 

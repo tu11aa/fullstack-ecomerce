@@ -5,7 +5,7 @@ import { useAuth } from "../../contexts/auth/AuthContext";
 
 const Navbar = () => {
   const { logout } = useAuth();
-  const { user } = useAuth().state;
+  const { user, error } = useAuth().state;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
@@ -18,7 +18,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="fixed px-2 top-0 left-0 right-0 z-50 bg-white shadow-md">
+      <div className="fixed px-6 top-0 left-0 right-0 z-50 bg-white shadow-md">
         <div className="flex items-center justify-between py-5 font-medium">
           <Link to="/">
             <img src={assets.logo} className="w-36" alt="logo" />
@@ -80,7 +80,7 @@ const Navbar = () => {
                 )}
               </div>
             </div>
-            <Link to="/cart" className="relative">
+            <Link to={`/user/${user?._id}/cart`} className="relative">
               <img
                 src={assets.cart_icon}
                 className="w-5 cursor-pointer min-w-5"
