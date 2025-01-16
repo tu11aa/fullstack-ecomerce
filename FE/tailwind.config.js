@@ -1,3 +1,5 @@
+import { PRODUCT_COLOR_CLASSNAME } from "./libs/colorConstant";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -8,5 +10,6 @@ export default {
       },
     },
   },
+  safelist: [...Object.values(PRODUCT_COLOR_CLASSNAME)],
   plugins: [],
 };
