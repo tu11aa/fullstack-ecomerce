@@ -1,4 +1,4 @@
-import { PRODUCT_COLOR_CLASSNAME } from "./libs/colorConstant";
+import { PRODUCT_COLOR_CLASSNAME } from "./src/libs/colorConstant";
 
 /** @type {import('tailwindcss').Config} */
 export default {

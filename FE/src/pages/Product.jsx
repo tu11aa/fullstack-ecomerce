@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import api from "../config/api";
 import LoadingSpinner from "../components/common/LoadingSpinner";
-import { PRODUCT_COLOR_CLASSNAME } from "../../libs/colorConstant";
+import { PRODUCT_COLOR_CLASSNAME } from "../libs/colorConstant";
 import { products } from "../assets/assets";
 
 const getProduct = async ({ queryKey }) => {
