@@ -7,7 +7,7 @@ import { useShop } from "../../contexts/shop/ShopContext.jsx";
 const Navbar = () => {
   const { logout } = useAuth();
   const { user, error } = useAuth().state;
-  const itemsInCart = useShop().cartQueries.cart?.items.length;
+  const itemsInCart = useShop().cartQueries.cart?.items.length || 0;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
