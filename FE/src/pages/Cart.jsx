@@ -1,44 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import CartItem from "../components/cart/CartItem";
 import OrderSummary from "../components/cart/OrderSummary";
-
-const cartItems = [
-  {
-    _id: "1",
-    name: "PC system All in One APPLE iMac (2023) mqrq3ro/a",
-    description:
-      'Apple M3, 24" Retina 4.5K, 8GB, SSD 256GB, 10-core GPU, Keyboard layout INT',
-    price: 1499,
-    quantity: 2,
-  },
-  {
-    _id: "2",
-    name: "PC system All in One APPLE iMac (2023) mqrq3ro/a",
-    description:
-      'Apple M3, 24" Retina 4.5K, 8GB, SSD 256GB, 10-core GPU, Keyboard layout INT',
-    price: 1499,
-    quantity: 2,
-  },
-  {
-    _id: "3",
-    name: "PC system All in One APPLE iMac (2023) mqrq3ro/a",
-    description:
-      'Apple M3, 24" Retina 4.5K, 8GB, SSD 256GB, 10-core GPU, Keyboard layout INT',
-    price: 1499,
-    quantity: 2,
-  },
-];
+import LoadingSpinner from "../components/common/LoadingSpinner";
+import { useShop } from "../contexts/shop/ShopContext";
 
 const Cart = () => {
+  const { cart, isLoading, error, clearCart } = useShop().cartQueries;
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (!cart || !cart.items || cart.items.length === 0 || error) {
+    return <div className="text-center">No items in cart</div>;
+  }
+
+  const [selected, setSelected] = useState([]);
+
+  const handleSelected = (productId) => {
+    if (selected.includes(productId)) {
+      setSelected(selected.filter((id) => id !== productId));
+    } else {
+      setSelected([...selected, productId]);
+    }
+  };
+
   return (
     <div className="flex flex-col md:flex-row justify-around gap-4">
-      <div className="grid grid-cols-1 gap-4 md:gap-6">
-        {cartItems.map((item) => (
-          <CartItem key={item._id} {...item} />
+      <div className="flex flex-col gap-4">
+        {cart.items.map((product) => (
+          <CartItem
+            key={product.productId}
+            productId={product.productId}
+            quantity={product.quantity}
+            isSelected={selected.includes(product.productId)}
+            onSelected={handleSelected}
+          />
         ))}
+        <button className="blue-button w-full" onClick={() => clearCart()}>
+          Clear Cart
+        </button>
       </div>
       <div className="flex flex-col gap-4 w-full md:w-1/4">
-        <OrderSummary />
+        <OrderSummary selectedProducts={selected} />
         <div className="flex flex-col gap-4 p-4 border rounded-lg shadow-sm">
           <input
             type="text"

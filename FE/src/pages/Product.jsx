@@ -1,16 +1,8 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import api from "../config/api";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import { PRODUCT_COLOR_CLASSNAME } from "../libs/colorConstant";
-import { products } from "../assets/assets";
-
-const getProduct = async ({ queryKey }) => {
-  const [, productId] = queryKey;
-
-  return (await api.get("products/" + productId)).data.product;
-};
+import useProductQueries from "../hooks/useProductQueries";
 
 const additionalData = {
   discount: 10,
@@ -18,16 +10,13 @@ const additionalData = {
   reviewCount: 120,
   colors: ["black", "gray", "blue"],
   sizes: ["S", "M", "L", "XL"],
-  key_fetures: ["Industry-leading noise cancellation", "30-hour battery life"],
+  keyFeatures: ["Industry-leading noise cancellation", "30-hour battery life"],
 };
 
 const Product = () => {
   const { productId } = useParams();
 
-  const { data, isPending, error } = useQuery({
-    queryKey: ["product", productId],
-    queryFn: getProduct,
-  });
+  const { data, isPending, error } = useProductQueries(productId);
 
   const [quantity, setQuantity] = useState(1);
   const [currentColor, setCurrentColor] = useState();
@@ -179,10 +168,9 @@ const Product = () => {
           <div>
             <h3 className="text-lg font-semibold mb-2">Key Features:</h3>
             <ul className="list-disc list-inside text-gray-700">
-              <li>Industry-leading noise cancellation</li>
-              <li>30-hour battery life</li>
-              <li>Touch sensor controls</li>
-              <li>Speak-to-chat technology</li>
+              {additionalData.keyFeatures.map((feature) => (
+                <li key={feature}>{feature}</li>
+              ))}
             </ul>
           </div>
         </div>

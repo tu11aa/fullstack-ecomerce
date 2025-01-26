@@ -37,14 +37,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/about" element={<About />} />
           <Route path="/collection" element={<Collection />} />
-          <Route
-            path="/user/:id/cart"
-            element={
-              <ProtectedRoute>
-                <Cart />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="cart" element={<Cart />} />
           <Route path="/products/:productId" element={<Product />} />
         </Routes>
         <ToastContainer />

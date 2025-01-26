@@ -1,34 +1,35 @@
 import React, { createContext, useContext, useReducer } from "react";
 import { shopReducer, initialShopState, SHOP_ACTIONS } from "./shopReducer";
+import api from "../../config/api";
+import { useAuth } from "../auth/AuthContext";
+import useCartQueries from "../../hooks/useCartQueries";
 
 const ShopContext = createContext(null);
 
 const ShopProvider = ({ children }) => {
+  const { user } = useAuth().state;
+  const cartQueries = useCartQueries();
   const [state, dispatch] = useReducer(shopReducer, initialShopState);
 
-  const updateConfigs = (configs) => {
-    dispatch({ type: SHOP_ACTIONS.UPDATE_CONFIGS, payload: configs });
-  };
+  // const updateConfigs = (configs) => {
+  //   dispatch({ type: SHOP_ACTIONS.UPDATE_CONFIGS, payload: configs });
+  // };
 
-  const updateCurrency = (currency) => {
-    dispatch({ type: SHOP_ACTIONS.UPDATE_CURRENCY, payload: currency });
-    localStorage.setItem("currency", currency);
-  };
+  // const updateCurrency = (currency) => {
+  //   dispatch({ type: SHOP_ACTIONS.UPDATE_CURRENCY, payload: currency });
+  //   localStorage.setItem("currency", currency);
+  // };
 
   const setShopFilters = (filters) => {
-    dispatch({ type: SHOP_ACTIONS.SET_SHOP_FILTERS, payload: filters });
-  };
+    state = {
+      ...state,
+      shop: {
+        ...state.shop,
+        filters,
+      },
+    };
 
-  const addToCart = (product) => {
-    dispatch({ type: SHOP_ACTIONS.ADD_TO_CART, payload: product });
-  };
-
-  const removeFromCart = (productId) => {
-    dispatch({ type: SHOP_ACTIONS.REMOVE_FROM_CART, payload: productId });
-  };
-
-  const clearCart = () => {
-    dispatch({ type: SHOP_ACTIONS.CLEAR_CART, payload: null });
+    dispatch({ type: SHOP_ACTIONS.SUCCESS, payload: state });
   };
 
   //   const setProducts = (products) => {
@@ -37,15 +38,12 @@ const ShopProvider = ({ children }) => {
 
   const value = {
     state,
-    dispatch,
 
-    updateCurrency,
+    cartQueries,
+    // updateCurrency,
 
     setShopFilters,
 
-    addToCart,
-    removeFromCart,
-    clearCart,
     // setProducts,
   };
 

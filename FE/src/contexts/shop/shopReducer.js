@@ -2,19 +2,10 @@ import { products } from "../../assets/assets";
 import { SHOP_CONSTANT } from "../../mocks/shopConstant";
 
 export const SHOP_ACTIONS = {
-  UPDATE_CONFIGS: "UPDATE_CONFIGS",
-  UPDATE_CURRENCY: "UPDATE_CURRENCY",
-
-  SET_PRODUCTS: "SET_PRODUCTS",
-  SET_LATEST_PRODUCTS: "SET_LATEST_PRODUCTS",
-  SET_BESTSELLER_PRODUCTS: "SET_BESTSELLER_PRODUCTS",
-  SET_SHOP_FILTERS: "SET_SHOP_FILTERS",
-
-  ADD_TO_CART: "ADD_TO_CART",
-  REMOVE_FROM_CART: "REMOVE_FROM_CART",
-  CLEAR_CART: "CLEAR_CART",
-
-  CHECKOUT: "CHECKOUT",
+  START: "START",
+  SUCCESS: "SUCCESS",
+  FAILURE: "FAILURE",
+  RESET: "RESET",
 };
 
 const DEFAULT_CURRENCY = "USD";
@@ -30,68 +21,41 @@ export const initialShopState = {
     bestsellerItems: products.filter((item) => item.bestseller),
     filters: {},
   },
-  cart: {
-    items: [],
-    totalPrice: 0,
-  },
   currency: localStorage.getItem("currency") || DEFAULT_CURRENCY,
   isLoading: false,
   error: null,
+  message: "",
 };
 
 export const shopReducer = (state, action) => {
   switch (action.type) {
-    case SHOP_ACTIONS.UPDATE_CONFIGS:
-      return {
-        ...state,
-        config: {
-          ...state.configs,
-          ...action.payload,
-        },
-      };
-    case SHOP_ACTIONS.UPDATE_CURRENCY:
-      return {
-        ...state,
-        currency: action.payload,
-      };
-    case SHOP_ACTIONS.SET_PRODUCTS:
-      return {
-        ...state,
-        shopItems: action.payload,
-      };
-    case SHOP_ACTIONS.SET_SHOP_FILTERS:
-      return {
-        ...state,
-        shop: {
-          ...state.shop,
-          filters: action.payload,
-        },
-      };
-    case SHOP_ACTIONS.ADD_TO_CART:
-      return {
-        ...state,
-        cartItems: [...state.cartItems, action.payload],
-        totalPrice: state.totalPrice + action.payload.price,
-      };
-    case SHOP_ACTIONS.REMOVE_FROM_CART:
-      return {
-        ...state,
-        cartItems: state.cartItems.filter(
-          (item) => item.id !== action.payload.id
-        ),
-        totalPrice: state.totalPrice - action.payload.price,
-      };
-    case SHOP_ACTIONS.CLEAR_CART:
-      return {
-        ...state,
-        cartItems: [],
-        totalPrice: 0,
-      };
-    case SHOP_ACTIONS.CHECKOUT:
+    case SHOP_ACTIONS.START:
       return {
         ...state,
         isLoading: true,
         error: null,
+        message: "",
+      };
+    case SHOP_ACTIONS.SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        message: "",
+        ...action.payload,
+      };
+    case SHOP_ACTIONS.FAILURE:
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
+        message: "",
+      };
+    case SHOP_ACTIONS.RESET:
+      return {
+        ...initialShopState,
+        shop: state.shop,
+        cart: state.cart,
       };
     default:
       return state;

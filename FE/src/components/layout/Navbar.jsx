@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { assets } from "../../assets/assets.js";
 import { useAuth } from "../../contexts/auth/AuthContext";
+import { useShop } from "../../contexts/shop/ShopContext.jsx";
 
 const Navbar = () => {
   const { logout } = useAuth();
   const { user, error } = useAuth().state;
+  const itemsInCart = useShop().cartQueries.cart?.items.length;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
@@ -80,14 +82,14 @@ const Navbar = () => {
                 )}
               </div>
             </div>
-            <Link to={`/user/${user?._id}/cart`} className="relative">
+            <Link to={`/cart`} className="relative">
               <img
                 src={assets.cart_icon}
                 className="w-5 cursor-pointer min-w-5"
                 alt="cart"
               />
               <div className="absolute bottom-[-5px] right-[-5px] w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-white text-[10px]">
-                100
+                {itemsInCart % 100}
               </div>
             </Link>
             <img
