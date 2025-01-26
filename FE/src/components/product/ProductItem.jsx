@@ -12,7 +12,7 @@ const ProductItem = ({ data }) => {
     <div className="flex flex-col border border-gray-400 hover:border-black my-4 p-4 text-gray-700 cursor-pointer gap-1">
       <Link to={`/products/${data._id}`}>
         <div className="overflow-hidden pb-2">
-          <img src={data.image[0]} alt={data.name} />
+          <img src={data.images[0]} alt={data.name} />
         </div>
         <h3 className="lg:text-lg hover:underline">{data.name}</h3>
       </Link>
