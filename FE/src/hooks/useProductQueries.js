@@ -9,7 +9,7 @@ const useProductQueries = (productId) => {
   } = useQuery({
     queryKey: ["product", productId],
     queryFn: async () => {
-      return productApi.getProductById(productId);
+      return await productApi.getProductById(productId);
     },
   });
 

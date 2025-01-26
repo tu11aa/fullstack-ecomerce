@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import { PRODUCT_COLOR_CLASSNAME } from "../libs/colorConstant";
 import useProductQueries from "../hooks/useProductQueries";
+import { useShop } from "../contexts/shop/ShopContext";
 
 const additionalData = {
   discount: 10,
@@ -16,33 +17,39 @@ const additionalData = {
 const Product = () => {
   const { productId } = useParams();
 
-  const { data, isPending, error } = useProductQueries(productId);
+  const { product, isLoading, error } = useProductQueries(productId);
+  const { addToCart } = useShop().cartQueries;
 
   const [quantity, setQuantity] = useState(1);
   const [currentColor, setCurrentColor] = useState();
-  const [currentImgage, setCurrentImage] = useState(data ? data.images[0] : "");
+  const [currentImage, setCurrentImage] = useState("");
 
-  if (isPending) {
-    return <LoadingSpinner />;
-  }
+  useEffect(() => {
+    if (!currentImage) setCurrentImage(product ? product.images[0] : "");
+  }, [product]);
 
   if (error) {
     return <div>Error {error.message}</div>;
+  }
+
+  if (isLoading) {
+    return <LoadingSpinner />;
   }
 
   return (
     <>
       <div className="flex flex-wrap -mx-4">
         {/* <!-- Product Images --> */}
-        <div className="w-full md:w-1/2 px-4 mb-8">
+        <div className="w-full md:w-2/5 px-4 mb-8">
           <img
-            src={currentImgage}
+            src={currentImage}
             alt="Product"
-            className="w-full h-auto rounded-lg shadow-md mb-4"
+            className="w-auto h-auto rounded-lg shadow-md mb-4 mx-auto"
           />
           <div className="flex gap-4 py-4 justify-center overflow-x-auto">
-            {data.images.map((src, index) => (
+            {product.images.map((src, index) => (
               <img
+                key={src}
                 src={src}
                 alt={`Thumbnail ${index}`}
                 className="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
@@ -54,12 +61,12 @@ const Product = () => {
 
         {/* <!-- Product Details --> */}
         <div className="w-full md:w-1/2 px-4">
-          <h2 className="text-3xl font-bold mb-2">{data.name}</h2>
-          <p className="text-gray-600 mb-4">SKU: {data._id}</p>
+          <h2 className="text-3xl font-bold mb-2">{product.name}</h2>
+          <p className="text-gray-600 mb-4">SKU: {product._id}</p>
           <div className="mb-4">
-            <span className="text-2xl font-bold mr-2">${data.price}</span>
+            <span className="text-2xl font-bold mr-2">${product.price}</span>
             <span className="text-gray-500 line-through">
-              ${data.price - 10}
+              ${product.price + 10}
             </span>
           </div>
           <div className="flex items-center mb-4">
@@ -85,7 +92,7 @@ const Product = () => {
               {additionalData.rating} ({additionalData.reviewCount} reviews)
             </span>
           </div>
-          <p className="text-gray-700 mb-6">{data.description}</p>
+          <p className="text-gray-700 mb-6">{product.description}</p>
 
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-2">Color:</h3>
@@ -129,7 +136,10 @@ const Product = () => {
           </div>
 
           <div className="flex space-x-4 mb-6">
-            <button className="bg-indigo-600 flex gap-2 items-center text-white px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            <button
+              className="blue-button flex gap-2 items-center"
+              onClick={() => addToCart(product._id, quantity)}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -146,7 +156,10 @@ const Product = () => {
               </svg>
               Add to Cart
             </button>
-            <button className="bg-gray-200 flex gap-2 items-center  text-gray-800 px-6 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+            <button
+              className="gray-outline-button flex gap-2 items-center  text-gray-800"
+              onClick={() => addToCart(product._id, quantity)}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
