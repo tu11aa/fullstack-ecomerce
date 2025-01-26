@@ -12,8 +12,6 @@ const useCartQueries = () => {
   const [guestCart, setGuestCart] = useState(null);
 
   useEffect(() => {
-    console.log("use effect init guest cart");
-
     const storedGuestCart = localStorage.getItem("guestCart");
     if (storedGuestCart) {
       setGuestCart(JSON.parse(storedGuestCart));
@@ -39,23 +37,18 @@ const useCartQueries = () => {
   } = useQuery({
     queryKey: ["cart", userId],
     queryFn: async () => {
-      console.log("query func");
-
       if (user) {
         return await cartApi.getCart(userId);
-      } else if (guestCart) {
-        return guestCart;
       }
       return null;
     },
-    enabled: !!user || !!guestCart,
+    enabled: !!user,
   });
   useEffect(() => {
     if (!isSuccess) return;
-    console.log("use effect check to merge guest cart");
+
     const foo = async () => {
       if (cart?.userId !== "guest" && guestCart) {
-        console.log("use effect merge guest cart mutation");
         await mergeGuestCartMutation.mutateAsync(cart);
       }
     };
@@ -84,19 +77,13 @@ const useCartQueries = () => {
     mutationFn: async (data) => {
       const { productId, quantity } = data;
 
-      if (user) {
-        console.log("add to cart mutation");
-        queryClient.setQueryData(["cart", userId], (prevCart) => {
-          if (!prevCart) return null;
+      queryClient.setQueryData(["cart", userId], (prevCart) => {
+        if (!prevCart) return null;
 
-          return cartHelper.addToCart(prevCart, productId, quantity);
-        });
+        return cartHelper.addToCart(prevCart, productId, quantity);
+      });
 
-        return await cartApi.addToCart(data.itemId, data.quantity);
-      } else {
-        console.log("add to guest cart");
-        setGuestCart(cartHelper.addToCart(guestCart, productId, quantity));
-      }
+      return await cartApi.addToCart(data.itemId, data.quantity);
     },
     ...mutationOptions,
   });
@@ -105,54 +92,59 @@ const useCartQueries = () => {
     mutationFn: async (data) => {
       const { productId, quantity } = data;
 
-      if (user) {
-        queryClient.setQueryData(["cart", userId], (prevCart) => {
-          if (!prevCart) return null;
+      queryClient.setQueryData(["cart", userId], (prevCart) => {
+        if (!prevCart) return null;
 
-          return cartHelper.removeFromCart(prevCart, productId, quantity);
-        });
+        return cartHelper.removeFromCart(prevCart, productId, quantity);
+      });
 
-        return await cartApi.removeFromCart(productId, quantity);
-      } else {
-        setGuestCart(cartHelper.removeFromCart(guestCart, productId, quantity));
-      }
+      return await cartApi.removeFromCart(productId, quantity);
     },
     ...mutationOptions,
   });
 
   const clearCartMutation = useMutation({
     mutationFn: async () => {
-      if (user) {
-        queryClient.setQueryData(["cart", userId], (prevCart) => {
-          if (!prevCart) return null;
+      queryClient.setQueryData(["cart", userId], (prevCart) => {
+        if (!prevCart) return null;
 
-          return cartHelper.clearCart(prevCart);
-        });
+        return cartHelper.clearCart(prevCart);
+      });
 
-        return await cartApi.removeFromCart(productId, quantity);
-      } else {
-        console.log("clear guest cart");
-
-        setGuestCart(cartHelper.clearCart(guestCart));
-      }
+      return await cartApi.removeFromCart(productId, quantity);
     },
     ...mutationOptions,
   });
 
   const addToCart = async (productId, quantity = 1) => {
-    await addToCartMutation.mutateAsync({ productId, quantity });
+    if (user) {
+      await addToCartMutation.mutateAsync({ productId, quantity });
+    } else {
+      setGuestCart(cartHelper.addToCart(guestCart, productId, quantity));
+    }
   };
 
   const removeFromCart = async (productId, quantity = 1) => {
-    await removeFromCartMutation.mutateAsync({ productId, quantity });
+    if (user) {
+      await removeFromCartMutation.mutateAsync({ productId, quantity });
+    } else {
+      setGuestCart(cartHelper.removeFromCart(guestCart, productId, quantity));
+    }
   };
 
   const clearCart = async () => {
-    await clearCartMutation.mutateAsync();
+    if (user) {
+      await clearCartMutation.mutateAsync();
+    } else {
+      setGuestCart(cartHelper.clearCart(guestCart));
+    }
   };
 
   const caculateSelectedItems = (selectedIds) => {
-    const { items } = queryClient.getQueryData(["cart", userId]);
+    const { items } = user
+      ? queryClient.getQueryData(["cart", userId])
+      : guestCart;
+
     return items.reduce((acc, item) => {
       const product = queryClient.getQueryData(["product", item.productId]);
 
@@ -166,7 +158,7 @@ const useCartQueries = () => {
   };
 
   return {
-    cart,
+    cart: user ? cart : guestCart,
     isLoading,
     error,
     addToCart,
