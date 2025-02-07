@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ProductItemList from "./ProductItemList";
 import Pagination from "../common/Pagination";
 
-const ProductItemListWithPagination = ({ items, itemsPerPage }) => {
+const ProductItemListWithPagination = ({ items, itemsPerPage = 12 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageCount = Math.ceil(items.length / itemsPerPage);
 
@@ -10,8 +10,16 @@ const ProductItemListWithPagination = ({ items, itemsPerPage }) => {
   const endIndex = startIndex + itemsPerPage;
   const currentItems = items.slice(startIndex, endIndex);
 
-  const handlePageChange = (pageNum) => {
-    setCurrentPage(pageNum);
+  const handleNextPage = () => {
+    setCurrentPage(currentPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage(currentPage - 1);
+  };
+
+  const handleGotoPage = (_page) => {
+    setCurrentPage(_page);
   };
 
   return (
@@ -20,8 +28,9 @@ const ProductItemListWithPagination = ({ items, itemsPerPage }) => {
 
       <Pagination
         pageCount={pageCount}
-        currentPage={currentPage}
-        handlePageChange={handlePageChange}
+        onNextPage={handleNextPage}
+        onPrevPage={handlePrevPage}
+        onGotoPage={handleGotoPage}
       />
     </div>
   );
