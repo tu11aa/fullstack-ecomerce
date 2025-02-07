@@ -14,6 +14,7 @@ import "react-toastify/ReactToastify.css";
 import { useAuth } from "./contexts/auth/AuthContext";
 import { useEffect } from "react";
 import LoadingSpinner from "./components/common/LoadingSpinner";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 function App() {
   const { getUser } = useAuth();
@@ -30,6 +31,7 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+      <ScrollToTop />
       <div className="flex-1 px-2 sm:px-[1vw] md:px-[3vw] lg:px-[5vw]">
         <Routes>
           <Route path="/" element={<Home />} />
