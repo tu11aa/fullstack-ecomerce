@@ -18,6 +18,12 @@ const useCartQueries = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (guestCart) {
+      localStorage.setItem("guestCart", JSON.stringify(guestCart));
+    }
+  }, [guestCart]);
+
   const mergeGuestCartMutation = useMutation({
     mutationFn: async (cart) => {
       return await mergeCart(cart);
@@ -65,11 +71,6 @@ const useCartQueries = () => {
     onError: (error, variables, context) => {
       queryClient.setQueryData(["cart", userId], context.previousCart);
       console.error("Mutation failed, reverting optimistic update:", error);
-    },
-    onSuccess: () => {
-      if (guestCart) {
-        localStorage.setItem("guestCart", JSON.stringify(guestCart));
-      }
     },
   };
 
