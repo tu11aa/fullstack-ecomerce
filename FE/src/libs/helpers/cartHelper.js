@@ -7,10 +7,9 @@ const initialGuestCart = () => ({
 });
 
 const updateCartItems = (cart, productId, quantity) => {
-  const newCart = { ...cart };
-  if (quantity === 0) return newCart;
+  if (quantity === 0) return null;
 
-  if (!newCart) newCart = initialGuestCart();
+  const newCart = cart ? { ...cart } : initialGuestCart();
 
   const cartItem = {
     productId,
