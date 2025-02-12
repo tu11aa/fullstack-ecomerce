@@ -2,13 +2,13 @@ import React, { createContext, useContext, useReducer } from "react";
 import { shopReducer, initialShopState, SHOP_ACTIONS } from "./shopReducer";
 import api from "../../config/api";
 import { useAuth } from "../auth/AuthContext";
-import useCartQueries from "../../hooks/useCartQueries";
+import useCart from "../../hooks/useCart";
 
 const ShopContext = createContext(null);
 
 const ShopProvider = ({ children }) => {
   const { user } = useAuth().state;
-  const cartQueries = useCartQueries();
+  const cartQueries = useCart(user?._id);
   const [state, dispatch] = useReducer(shopReducer, initialShopState);
 
   // const updateConfigs = (configs) => {

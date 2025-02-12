@@ -27,7 +27,7 @@ const Cart = () => {
 
   return (
     <div className="flex flex-col md:flex-row justify-around gap-4">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 w-full md:w-3/4">
         {cart.items.map((product) => (
           <CartItem
             key={product.productId}
