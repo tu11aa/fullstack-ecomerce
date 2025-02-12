@@ -8,8 +8,8 @@ const getCart = async (limit = 40) => {
   return cart;
 };
 
-const mergeCart = async (guestCart) => {
-  await api.put(`${route}/merge`, guestCart);
+const mergeCart = async (items) => {
+  await api.put(`${route}/merge`, { items });
 };
 
 const addToCart = async (productId, quantity) => {
