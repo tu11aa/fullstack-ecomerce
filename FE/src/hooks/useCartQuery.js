@@ -49,7 +49,7 @@ const useCartQuery = (userId = "guest") => {
         return cartHelper.addToCart(prevCart, productId, quantity);
       });
 
-      return await cartApi.addToCart(data.itemId, data.quantity);
+      return await cartApi.addToCart(productId, quantity);
     },
     ...mutationOptions,
   });
@@ -77,7 +77,7 @@ const useCartQuery = (userId = "guest") => {
         return cartHelper.clearCart(prevCart);
       });
 
-      return await cartApi.removeFromCart(productId, quantity);
+      return await cartApi.clearCart();
     },
     ...mutationOptions,
   });

@@ -7,10 +7,6 @@ import { useShop } from "../contexts/shop/ShopContext";
 const Cart = () => {
   const { cart, isLoading, error, clearCart } = useShop().cartQueries;
 
-  if (!cart || !cart.items || cart.items.length === 0 || error) {
-    return <div className="text-center">No items in cart</div>;
-  }
-
   const [selected, setSelected] = useState([]);
 
   const handleSelected = (productId) => {
@@ -23,6 +19,10 @@ const Cart = () => {
 
   if (isLoading) {
     return <LoadingSpinner />;
+  }
+
+  if (!cart || !cart.items || cart.items.length === 0 || error) {
+    return <div className="text-center">No items in cart</div>;
   }
 
   return (
