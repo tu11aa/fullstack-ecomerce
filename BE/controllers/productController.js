@@ -1,4 +1,4 @@
-import { uploadImages } from "../helpers/productHelper.js";
+import productHelpers from "../helpers/productHelper.js";
 import { SHOP_CATEGORIES } from "../libs/constant.js";
 import productModel from "../models/productModel.js";
 
@@ -9,7 +9,7 @@ const DEFAULT_CONFIGS = {
   SORT_ORDER: "desc",
 };
 
-const getConfigs = async (req, res) => {
+const getConfigs = async (req, res, next) => {
   try {
     const configs = {
       shop_categories: SHOP_CATEGORIES,
@@ -17,50 +17,55 @@ const getConfigs = async (req, res) => {
     };
     res.status(200).json({ success: true, configs });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-const getProducts = async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || DEFAULT_CONFIGS.ITEMS_PER_PAGE;
-
-  const currency = req.query.currency || DEFAULT_CONFIGS.CURRENCY;
-
-  const filter = JSON.parse(req.query.filter) || {};
-
-  const search = req.query.search || "";
-  if (search) {
-    filter.name = { $regex: search, $options: "i" };
-  }
-
-  const sortField = req.query.sortField || DEFAULT_CONFIGS.SORT_FIELD;
-  const sortOrder = req.query.sortOrder || DEFAULT_CONFIGS.SORT_ORDER;
-  const sort = { [sortField]: sortOrder === "asc" ? 1 : -1 };
-
-  const startIndex = (page - 1) * DEFAULT_CONFIGS.ITEMS_PER_PAGE;
-  const endIndex = startIndex + limit;
-
+const getProducts = async (req, res, next) => {
   try {
-    const products = await productModel
-      .find(filter)
-      .sort(sort)
-      .skip(startIndex)
-      .limit(endIndex);
+    const page =
+      req.query.page === "all" ? req.query.page : parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || DEFAULT_CONFIGS.ITEMS_PER_PAGE;
+
+    const currency = req.query.currency || DEFAULT_CONFIGS.CURRENCY;
+
+    const filter = JSON.parse(req.query.filter) || {};
+
+    const search = req.query.search || "";
+    if (search) {
+      filter.name = { $regex: search, $options: "i" };
+    }
+
+    const sortField = req.query.sortField || DEFAULT_CONFIGS.SORT_FIELD;
+    const sortOrder = req.query.sortOrder || DEFAULT_CONFIGS.SORT_ORDER;
+    const sort = { [sortField]: sortOrder === "asc" ? 1 : -1 };
+
+    let products;
+    if (page === "all") {
+      products = await productModel.find(filter).sort(sort).limit(limit);
+    } else {
+      const startIndex = (page - 1) * DEFAULT_CONFIGS.ITEMS_PER_PAGE;
+      const endIndex = startIndex + DEFAULT_CONFIGS.ITEMS_PER_PAGE;
+
+      products = await productModel
+        .find(filter)
+        .sort(sort)
+        .skip(startIndex)
+        .limit(endIndex);
+    }
 
     //to be implemented price conversion
 
     const total = await products.countDocuments(filter);
+    const totalPages = Math.ceil(total / DEFAULT_CONFIGS.ITEMS_PER_PAGE);
 
-    res.status(200).json({ success: true, products, total });
+    res.status(200).json({ success: true, products, total, totalPages });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-const getLatestProducts = async (_, res) => {
+const getLatestProducts = async (_, res, next) => {
   try {
     const products = await productModel
       .find()
@@ -69,34 +74,45 @@ const getLatestProducts = async (_, res) => {
 
     res.status(200).json({ success: true, products });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-const getBestSellerProducts = async (_, res) => {
+const getBestSellerProducts = async (_, res, next) => {
   try {
     const products = await productModel.find({ bestSeller: true });
 
     res.status(500).json({ success: true, products });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-const getProductById = async (req, res) => {
+const getProductById = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const { isMinimized } = req.query;
+
     const product = await productModel.findById(id);
+    if (isMinimized) {
+      return res.status(200).json({
+        success: true,
+        product: {
+          _id: product._id,
+          name: product.name,
+          discription: product.description,
+          price: product.price,
+          image: product.images[0],
+        },
+      });
+    }
     res.status(200).json({ success: true, product });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-const addProduct = async (req, res) => {
+const addProduct = async (req, res, next) => {
   try {
     const {
       name,
@@ -109,7 +125,7 @@ const addProduct = async (req, res) => {
     } = req.body;
     const { images } = req.files;
 
-    const imageUrls = await uploadImages(images);
+    const imageUrls = await productHelpers.uploadImages(images);
 
     const product = await productModel.create({
       name,
@@ -127,12 +143,11 @@ const addProduct = async (req, res) => {
       .status(201)
       .json({ success: true, message: "Product added successfully", product });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-const updateProduct = async (req, res) => {
+const updateProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
     const {
@@ -166,12 +181,11 @@ const updateProduct = async (req, res) => {
       product,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-const deleteProduct = async (req, res) => {
+const deleteProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
     const product = await productModel.findByIdAndDelete(id);
@@ -181,8 +195,7 @@ const deleteProduct = async (req, res) => {
       product,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 

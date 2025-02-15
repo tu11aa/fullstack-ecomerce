@@ -8,15 +8,15 @@ dotenv.config();
 
 const PASSWORD_MINIMUM_LENGTH = 6;
 
-const getMe = async (req, res) => {
+const getMe = async (req, res, next) => {
   try {
     res.status(200).json({ success: true, user: req.user });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-const loginUser = async (req, res) => {
+const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -58,12 +58,11 @@ const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-const adminLogin = async (req, res) => {
+const adminLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -96,12 +95,11 @@ const adminLogin = async (req, res) => {
 
     res.status(200);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-const registerUser = async (req, res) => {
+const registerUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
@@ -137,12 +135,11 @@ const registerUser = async (req, res) => {
       .status(201)
       .json({ success: true, message: "User created successfully" });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-const logoutUser = async (req, res) => {
+const logoutUser = async (req, res, next) => {
   try {
     res.cookie("auth_token", "", {
       httpOnly: true,
@@ -153,8 +150,7 @@ const logoutUser = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Logged out successfully" });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
