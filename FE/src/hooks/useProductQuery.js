@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import productApi from "../api/productApi";
 
-const useProductQueries = (productId) => {
+const useProductQuery = (productId) => {
   const {
     data: product,
     isLoading,
@@ -16,4 +16,4 @@ const useProductQueries = (productId) => {
   return { product, isLoading, error };
 };
 
-export default useProductQueries;
+export default useProductQuery;

@@ -1,12 +1,12 @@
 import React, { memo } from "react";
 import LoadingSpinner from "../common/LoadingSpinner";
-import useProductQueries from "../../hooks/useProductQueries";
+import useProductQuery from "../../hooks/useProductQuery";
 import { useShop } from "../../contexts/shop/ShopContext";
 // import { Heart, X, Minus, Plus } from "lucide-react";
 
 const CartItem = memo(({ productId, quantity, isSelected, onSelected }) => {
   const { addToCart, removeFromCart } = useShop().cartQueries;
-  const { product, isLoading, error } = useProductQueries(productId);
+  const { product, isLoading, error } = useProductQuery(productId);
 
   if (isLoading) {
     return <LoadingSpinner />;

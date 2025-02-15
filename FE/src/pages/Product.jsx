@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import { PRODUCT_COLOR_CLASSNAME } from "../libs/colorConstant";
-import useProductQueries from "../hooks/useProductQueries";
+import useProductQuery from "../hooks/useProductQuery";
 import { useShop } from "../contexts/shop/ShopContext";
 
 const additionalData = {
@@ -17,7 +17,7 @@ const additionalData = {
 const Product = () => {
   const { productId } = useParams();
 
-  const { product, isLoading, error } = useProductQueries(productId);
+  const { product, isLoading, error } = useProductQuery(productId);
   const { addToCart } = useShop().cartQueries;
 
   const [quantity, setQuantity] = useState(1);

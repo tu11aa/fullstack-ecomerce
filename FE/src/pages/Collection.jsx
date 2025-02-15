@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { assets } from "../assets/assets.js";
 import { useShop } from "../contexts/shop/ShopContext.jsx";
 import CategorySelectBox from "../components/layout/CategorySelectBox.jsx";
-import useProductsQueries from "../hooks/useProductsQueries.js";
+import useProductsQuery from "../hooks/useProductsQuery.js";
 import LoadingSpinner from "../components/common/LoadingSpinner.jsx";
 import Pagination from "../components/common/Pagination.jsx";
 import ProductItemList from "../components/product/ProductItemList.jsx";
@@ -24,7 +24,7 @@ const Collection = () => {
     setPage,
     filters,
     setFilters,
-  } = useProductsQueries("all", currentPage);
+  } = useProductsQuery("all", currentPage);
 
   const [showFilter, setShowFilter] = useState(true);
 

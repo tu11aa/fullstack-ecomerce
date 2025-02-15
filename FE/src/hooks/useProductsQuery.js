@@ -6,7 +6,7 @@ import {
 import productApi from "../api/productApi";
 import { useEffect, useState } from "react";
 
-const useProductsQueries = (
+const useProductsQuery = (
   collection = "all",
   initialPage = 1,
   initialFilters = {}
@@ -57,4 +57,4 @@ const useProductsQueries = (
   };
 };
 
-export default useProductsQueries;
+export default useProductsQuery;
