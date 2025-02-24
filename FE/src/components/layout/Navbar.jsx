@@ -59,8 +59,11 @@ const Navbar = () => {
               <div className="group-hover:block hidden absolute right-0 w-40 p-2 dropdown-menu bg-gray-100 rounded-md text-gray-700 text-center">
                 {user ? (
                   <>
-                    <p className="cursor-pointer hover:text-black p-2">
-                      Profile
+                    <p
+                      className="cursor-pointer hover:text-black p-2"
+                      onClick={() => navigate("/user")}
+                    >
+                      User
                     </p>
                     <p className="cursor-pointer hover:text-black p-2">
                       Orders

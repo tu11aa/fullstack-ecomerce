@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useEffect } from "react";
 import { authReducer, initialAuthState, AUTH_ACTIONS } from "./authReducer";
 import api from "../../config/api";
 
@@ -6,6 +6,12 @@ const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
+
+  console.log("AuthProvider state", state);
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const login = async (credentials) => {
     dispatch({ type: AUTH_ACTIONS.START });

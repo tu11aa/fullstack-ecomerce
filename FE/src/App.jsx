@@ -8,6 +8,9 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Order from "./pages/Order";
 import Cart from "./pages/Cart";
+import User from "./pages/User";
+import Addresses from "./pages/Addresses";
+import Profile from "./pages/Profile";
 import Footer from "./components/layout/Footer";
 import ProtectedRoute from "./components/utils/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
@@ -45,6 +48,18 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="user"
+            element={
+              <ProtectedRoute>
+                <User />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Profile />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="addresses" element={<Addresses />} />
+          </Route>
         </Routes>
         <ToastContainer />
       </div>
