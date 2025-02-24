@@ -1,9 +1,13 @@
 import React from "react";
-import { useShop } from "../../contexts/shop/ShopContext";
 
-const OrderSummary = ({ selectedProducts }) => {
-  const { caculateSelectedItems } = useShop().cartQueries;
-  const originalPrice = caculateSelectedItems(selectedProducts);
+const OrderSummary = ({
+  originalPrice = 0,
+  tax = null,
+  discount = null,
+  shippingFee = null,
+  children,
+}) => {
+  const total = originalPrice + tax - discount + shippingFee;
 
   return (
     <div className="flex flex-col gap-4 p-4 border rounded-lg shadow-sm">
@@ -14,26 +18,31 @@ const OrderSummary = ({ selectedProducts }) => {
         <p className="text-md text-gray-700 line-clamp-2">Original Price</p>
         <p className="text-md text-black">{originalPrice}</p>
       </div>
-      <div className="flex justify-between">
-        <p className="text-md text-gray-700 line-clamp-2">Discount</p>
-        <p className="text-md text-green-600">0</p>
-      </div>
-      <div className="flex justify-between">
-        <p className="text-md text-gray-700 line-clamp-2">Tax</p>
-        <p className="text-md text-black">0</p>
-      </div>
+      {discount ? (
+        <div className="flex justify-between">
+          <p className="text-md text-green-500 line-clamp-2">- Discount</p>
+          <p className="text-md text-green-600">{discount}</p>
+        </div>
+      ) : (
+        <></>
+      )}
+      {tax && (
+        <div className="flex justify-between">
+          <p className="text-md text-gray-700 line-clamp-2">+ Tax</p>
+          <p className="text-md text-black">{tax}</p>
+        </div>
+      )}
+      {shippingFee && (
+        <div className="flex justify-between">
+          <p className="text-md text-gray-700 line-clamp-2">+ Shipping Fee</p>
+          <p className="text-md text-black">{shippingFee}</p>
+        </div>
+      )}
       <div className="flex justify-between border-t border-t-gray-400 pt-2">
         <p className="text-md font-medium text-gray-900 line-clamp-2">Total</p>
-        <p className="text-md text-black">{originalPrice}</p>
+        <p className="text-md text-black">{originalPrice ? total : 0}</p>
       </div>
-      <div className="flex md:flex-col gap-2 justify-between">
-        <button type="button" className="blue-button w-1/2 md:w-full">
-          Checkout
-        </button>
-        <button type="button" className="gray-outline-button w-1/2 md:w-full">
-          Continue Shopping
-        </button>
-      </div>
+      <div className="flex md:flex-col gap-2 justify-between">{children}</div>
     </div>
   );
 };

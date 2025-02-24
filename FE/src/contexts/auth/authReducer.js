@@ -13,7 +13,7 @@ export const AUTH_ACTIONS = {
 
 export const initialAuthState = {
   user: null,
-  isLoading: false,
+  isLoading: true,
   error: null,
   message: "",
 };

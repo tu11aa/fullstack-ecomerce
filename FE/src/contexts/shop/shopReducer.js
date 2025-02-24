@@ -8,7 +8,7 @@ export const SHOP_ACTIONS = {
   RESET: "RESET",
 };
 
-const DEFAULT_CURRENCY = "USD";
+const DEFAULT_CURRENCY = "VND";
 
 export const initialShopState = {
   configs: {

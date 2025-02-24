@@ -4,7 +4,7 @@ import useProductQuery from "../../hooks/useProductQuery";
 import { useShop } from "../../contexts/shop/ShopContext";
 // import { Heart, X, Minus, Plus } from "lucide-react";
 
-const CartItem = memo(({ productId, quantity, isSelected, onSelected }) => {
+const CartItem = memo(({ productId, quantity }) => {
   const { addToCart, removeFromCart } = useShop().cartQueries;
   const { product, isLoading, error } = useProductQuery(productId);
 
@@ -21,12 +21,6 @@ const CartItem = memo(({ productId, quantity, isSelected, onSelected }) => {
 
   return (
     <div className="flex items-center gap-6 p-4 border rounded-lg shadow-sm max-h-40 lg:max-h-32">
-      <input
-        type="checkbox"
-        className="w-4 h-4"
-        checked={isSelected}
-        onChange={() => onSelected(productId)}
-      />
       {/* Product Image */}
       <div className="max-w-24 max-h-24 bg-gray-100 flex items-center justify-center">
         <img src={image} alt="Product" className="w-25 h-25 object-contain" />

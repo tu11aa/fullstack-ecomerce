@@ -2,10 +2,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import useGuestCart from "./useGuestCart";
 import useCartQuery from "./useCartQuery";
+import productApi from "../api/productApi";
 
 const useCart = (userId = null) => {
   const queryClient = useQueryClient();
-  console.log("refreshing useCart", userId);
 
   // const cart = userId ? remoteCart : guestCart;
   const guestCart = useGuestCart();
@@ -13,8 +13,6 @@ const useCart = (userId = null) => {
 
   useEffect(() => {
     if (!userId) return;
-
-    console.log("useCart useEffect", userId);
 
     const foo = async () => {
       if (guestCart.guestCart) {
@@ -49,19 +47,22 @@ const useCart = (userId = null) => {
     }
   };
 
-  const caculateSelectedItems = (selectedIds) => {
-    const { items } = userId ? remoteCart.data : guestCart.guestCart;
+  const caculateSelectedItems = async (selectedIds) => {
+    const cart = userId ? remoteCart.data : guestCart.guestCart;
+    const items = cart ? cart.items : [];
 
-    return items.reduce((acc, item) => {
-      const product = queryClient.getQueryData(["product", item.productId]); //need refactor here
+    let sum = 0;
+    for (const item of items) {
+      if (selectedIds.includes(item.productId)) {
+        let product =
+          (await queryClient.getQueryData(["product", item.productId])) ||
+          (await productApi.getProductById(item.productId));
 
-      return (
-        acc +
-        (selectedIds.includes(item.productId)
-          ? product.price * item.quantity
-          : 0)
-      );
-    }, 0);
+        sum += item.quantity * product.price;
+      }
+    }
+
+    return sum;
   };
 
   const cartDataToReturn = userId
