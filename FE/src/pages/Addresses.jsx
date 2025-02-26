@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import AddressLine from "../components/profile/AddressLine";
 import ShippingAddressFormPopup from "../components/popups/ShippingAddressFormPopup";
+import { MODAL_TYPES, useModal } from "../contexts/modal/ModalContext";
 
 const addresses = [
   {
@@ -45,7 +46,28 @@ const addresses = [
 ];
 
 const Addresses = () => {
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const { openModal } = useModal();
+
+  const openForm = (prefilledData = null) => {
+    openModal(
+      MODAL_TYPES.CUSTOM,
+      { prefilledData, onSubmit: handleSubmitForm },
+      ShippingAddressFormPopup
+    );
+  };
+
+  const handleUpdateAddress = (addressId) => {
+    openForm(addresses[addressId]);
+  };
+
+  const handleDeleteAddress = (addressId) => {
+    //todo: delete address
+  };
+
+  const handleSubmitForm = (data) => {
+    console.log("Form submitted:", data);
+    //todo: update address
+  };
 
   return (
     <div className="flex flex-col gap-2 p-4">
@@ -56,20 +78,17 @@ const Addresses = () => {
           phone={address.phoneNumber}
           address={`${address.addressLine1}, ${address.ward}, ${address.district}, ${address.city}, ${address.country}`}
           isDefault={address.isDefault}
+          onUpdate={() => handleUpdateAddress(index)}
+          onDelete={() => handleDeleteAddress(index)}
         />
       ))}
 
       <button
         className="gray-outline-button w-full py-2 px-4 flex items-center justify-center gap-2"
-        onClick={() => setIsFormOpen(true)}
+        onClick={() => openForm()}
       >
         + Add new
       </button>
-
-      <ShippingAddressFormPopup
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-      />
     </div>
   );
 };

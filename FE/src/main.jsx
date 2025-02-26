@@ -6,6 +6,7 @@ import AuthProvider from "./contexts/auth/AuthContext";
 import ShopProvider from "./contexts/shop/ShopContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import ModalProvider from "./contexts/modal/ModalContext.jsx";
 
 const queryClient = new QueryClient();
 
@@ -14,7 +15,9 @@ createRoot(document.getElementById("root")).render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ShopProvider>
-          <App />
+          <ModalProvider>
+            <App />
+          </ModalProvider>
           {import.meta.env.MODE === "development" && (
             <ReactQueryDevtools initialIsOpen={false} />
           )}
