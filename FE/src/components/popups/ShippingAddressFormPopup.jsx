@@ -18,6 +18,7 @@ const initialFormData = {
 };
 
 const ShippingAddressFormPopup = ({
+  intend = "add",
   prefilledData = null,
   onSubmit,
   onClose,
@@ -41,7 +42,7 @@ const ShippingAddressFormPopup = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onSubmit) onSubmit(formData);
+    if (onSubmit) onSubmit(intend, formData);
     onClose();
   };
 

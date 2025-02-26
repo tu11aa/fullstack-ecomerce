@@ -48,25 +48,31 @@ const addresses = [
 const Addresses = () => {
   const { openModal } = useModal();
 
-  const openForm = (prefilledData = null) => {
+  const openForm = (intend = "add", prefilledData = null) => {
     openModal(
       MODAL_TYPES.CUSTOM,
-      { prefilledData, onSubmit: handleSubmitForm },
+      { intend, prefilledData, onSubmit: handleSubmitForm },
       ShippingAddressFormPopup
     );
   };
 
   const handleUpdateAddress = (addressId) => {
-    openForm(addresses[addressId]);
+    openForm("update", addresses[addressId]);
   };
 
   const handleDeleteAddress = (addressId) => {
     //todo: delete address
   };
 
-  const handleSubmitForm = (data) => {
+  const handleSubmitForm = (intend, data) => {
+    console.log("Intend:", intend);
     console.log("Form submitted:", data);
-    //todo: update address
+
+    if (intend === "add") {
+      //todo: add new address
+    } else if (intend === "update") {
+      //todo: update address
+    }
   };
 
   return (
