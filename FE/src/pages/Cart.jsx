@@ -23,7 +23,7 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    navigate("/order", { state: { selected }, replace: true });
+    navigate("/order", { state: { selected } });
   };
 
   useEffect(() => {

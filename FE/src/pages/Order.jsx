@@ -6,17 +6,17 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 import { useShop } from "../contexts/shop/ShopContext";
 import { useAuth } from "../contexts/auth/AuthContext";
 import { toast } from "react-toastify";
-import Addresses from "../components/profile/Addresses";
+// import Addresses from "../components/profile/Addresses";
 
 const Order = () => {
   const { selected } = useLocation().state || {};
   if (!selected) {
-    return <Navigate to="/cart" replace />;
+    return <Navigate to="/cart" />;
   }
 
   const { addresses } = useAuth().state.user;
   if (!addresses || addresses.length === 0) {
-    // return <Navigate to="/profile#shipping-addresses" replace />;
+    // return <Navigate to="/profile#shipping-addresses" />;
   }
 
   const { cart, isLoading, error, caculateSelectedItems } =
@@ -44,12 +44,12 @@ const Order = () => {
   }
 
   if (!cart || !cart.items || cart.items.length === 0 || error) {
-    return <Navigate to="/cart" replace />;
+    return <Navigate to="/cart" />;
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <Addresses />
+      {/* <Addresses /> */}
       <div className="flex flex-col md:flex-row justify-around gap-4">
         <div className="flex flex-col gap-4 w-full md:w-3/4">
           {cart.items.map((product) => (
