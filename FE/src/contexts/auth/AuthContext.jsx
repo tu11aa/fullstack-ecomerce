@@ -7,8 +7,6 @@ const AuthContext = createContext(null);
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
-  console.log("AuthProvider state", state);
-
   useEffect(() => {
     getUser();
   }, []);
