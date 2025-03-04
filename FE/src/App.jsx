@@ -1,23 +1,23 @@
-import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Navbar from "./components/layout/Navbar";
-import Product from "./pages/Product";
-import Collection from "./pages/Collection";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Order from "./pages/Order";
-import Cart from "./pages/Cart";
-import User from "./pages/User";
-import Addresses from "./pages/Addresses";
-import Profile from "./pages/Profile";
-import Footer from "./components/layout/Footer";
-import ProtectedRoute from "./components/utils/ProtectedRoute";
-import { ToastContainer } from "react-toastify";
-import { useAuth } from "./contexts/auth/AuthContext";
-import LoadingSpinner from "./components/common/LoadingSpinner";
-import ScrollToTop from "./components/common/ScrollToTop";
-import "react-toastify/ReactToastify.css";
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
+import Navbar from './components/layout/Navbar';
+import Product from './pages/Product';
+import Collection from './pages/Collection';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Order from './pages/Order';
+import Cart from './pages/Cart';
+import User from './pages/User';
+import Addresses from './pages/Addresses';
+import Profile from './pages/Profile';
+import Footer from './components/layout/Footer';
+import ProtectedRoute from './components/utils/ProtectedRoute';
+import { ToastContainer } from 'react-toastify';
+import { useAuth } from './contexts/auth/AuthContext';
+import LoadingSpinner from './components/common/LoadingSpinner';
+import ScrollToTop from './components/common/ScrollToTop';
+import 'react-toastify/ReactToastify.css';
 
 function App() {
   const { isLoading } = useAuth().state;
@@ -56,7 +56,7 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<Profile />} />
+            <Route index element={<Navigate to="/user/profile" />} />
             <Route path="profile" element={<Profile />} />
             <Route path="addresses" element={<Addresses />} />
           </Route>
