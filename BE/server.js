@@ -21,13 +21,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin:
+      process.env.NODE_ENV === 'development'
+        ? [
+            'http://localhost:8080',
+            'http://localhost:4173',
+          ]
+        : process.env.DOMAIN,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-Preferred-Currency", // Added the currency header
+      'Content-Type',
+      'Authorization',
+      'X-Preferred-Currency', // Added the currency header
     ],
   })
 );
