@@ -5,18 +5,23 @@ import OrderSummary from "../components/cart/OrderSummary";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import { useShop } from "../contexts/shop/ShopContext";
 import { useAuth } from "../contexts/auth/AuthContext";
+import { useModal } from "../contexts/modal/ModalContext";
 import { toast } from "react-toastify";
-// import Addresses from "../components/profile/Addresses";
+import AddressLine from "../components/profile/AddressLine";
+import ShippingAddressesPopup from "../components/popups/ShippingAddressesPopup";
+import ShippingAddressFormPopup from "../components/popups/ShippingAddressFormPopup";
+import { MODAL_TYPES } from "../contexts/modal/ModalContext";
 
 const Order = () => {
   const { selected } = useLocation().state || {};
-  if (!selected) {
-    return <Navigate to="/cart" />;
+  if (!selected || selected.length === 0) {
+    return <Navigate to="/cart" replace />;
   }
 
+  const { openModal } = useModal();
   const { addresses } = useAuth().state.user;
   if (!addresses || addresses.length === 0) {
-    // return <Navigate to="/profile#shipping-addresses" />;
+    openModal(MODAL_TYPES.CUSTOM, {}, ShippingAddressFormPopup);
   }
 
   const { cart, isLoading, error, caculateSelectedItems } =
@@ -49,7 +54,18 @@ const Order = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* <Addresses /> */}
+      <div className="flex flex-col gap-2 p-4 border rounded-lg shadow-sm">
+        <h1>Shipping Address:</h1>
+        <AddressLine
+          name="LOTTE Mart Quận 11"
+          phone="0901057057"
+          address="Lầu 1-5 Tòa nhà EverRich, 968 Đ. 3 Tháng 2, Phường 15, Quận 11, Hồ Chí Minh, Việt Nam"
+          isDefault
+          onUpdate={() =>
+            openModal(MODAL_TYPES.CUSTOM, {}, ShippingAddressesPopup)
+          }
+        />
+      </div>
       <div className="flex flex-col md:flex-row justify-around gap-4">
         <div className="flex flex-col gap-4 w-full md:w-3/4">
           {cart.items.map((product) => (
