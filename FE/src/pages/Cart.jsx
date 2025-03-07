@@ -46,7 +46,7 @@ const Cart = () => {
     <div className="flex flex-col md:flex-row justify-around gap-4">
       <div className="flex flex-col gap-4 w-full md:w-3/4">
         {cart.items.map((product) => (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" key={product.productId}>
             <input
               type="checkbox"
               className="w-4 h-4"

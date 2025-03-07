@@ -1,6 +1,8 @@
-import { createContext, useContext, useReducer, useEffect } from "react";
-import { authReducer, initialAuthState, AUTH_ACTIONS } from "./authReducer";
-import api from "../../config/api";
+import { createContext, useContext, useReducer, useEffect } from 'react';
+import { authReducer, initialAuthState, AUTH_ACTIONS } from './authReducer';
+import api from '../../config/api';
+import authApi from '../../api/authApi';
+import userApi from '../../api/userApi';
 
 const AuthContext = createContext(null);
 
@@ -15,8 +17,7 @@ const AuthProvider = ({ children }) => {
     dispatch({ type: AUTH_ACTIONS.START });
 
     try {
-      const { user, message } = (await api.post("users/login", credentials))
-        .data;
+      const { user, message } = await authApi.login(credentials);
 
       dispatch({
         type: AUTH_ACTIONS.LOGIN_SUCCESS,
@@ -31,7 +32,7 @@ const AuthProvider = ({ children }) => {
     dispatch({ type: AUTH_ACTIONS.START });
 
     try {
-      const { message } = (await api.post("users/register", credentials)).data;
+      const message = await authApi.register(credentials);
 
       dispatch({ type: AUTH_ACTIONS.SUCCESS, payload: message });
     } catch (error) {
@@ -43,7 +44,7 @@ const AuthProvider = ({ children }) => {
     dispatch({ type: AUTH_ACTIONS.START });
 
     try {
-      const { message } = await api.post("/users/logout");
+      const message = await authApi.logout();
 
       dispatch({ type: AUTH_ACTIONS.LOGOUT_SUCCESS, payload: message });
     } catch (error) {
@@ -55,7 +56,7 @@ const AuthProvider = ({ children }) => {
     dispatch({ type: AUTH_ACTIONS.START });
 
     try {
-      const { user } = (await api.get("/users/me")).data;
+      const user = await userApi.getMe();
 
       dispatch({ type: AUTH_ACTIONS.UPDATE_USER_SUCCESS, payload: user });
     } catch (error) {
@@ -84,7 +85,7 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error("useAuth must be used within a AuthProvider");
+    throw new Error('useAuth must be used within a AuthProvider');
   }
 
   return context;

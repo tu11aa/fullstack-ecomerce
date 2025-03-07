@@ -1,8 +1,8 @@
-import { products } from "../assets/assets";
-import api from "../config/api";
-import { sleep } from "../libs/utils";
+import { products } from '../assets/assets';
+import api from '../config/api';
+import { sleep } from '../libs/utils';
 
-const route = "/products";
+const route = '/products';
 
 const getProductById = async (productId) => {
   // const { product } = (await api.get(`${route}/${productId}`)).data;
@@ -11,10 +11,10 @@ const getProductById = async (productId) => {
   return product;
 };
 
-const getProducts = async (page, filter = {}, sort = "") => {
+const getProducts = async (page, filter = {}, sort = '') => {
   // const data = (await api.get(route, { params: { page, filter } }))
   //   .data;
-  await sleep(3000);
+  await sleep(1000);
 
   return {
     items: products.slice((page - 1) * 12, page * 12),
@@ -25,7 +25,7 @@ const getProducts = async (page, filter = {}, sort = "") => {
 const getLatestProducts = async () => {
   // const data = (await api.get(route, { params: { page, filter } }))
   //   .data;
-  await sleep(3000);
+  await sleep(1000);
   return {
     items: products.slice(0, 24),
   };
@@ -34,7 +34,7 @@ const getLatestProducts = async () => {
 const getBestSellerProducts = async () => {
   // const data = (await api.get(route, { params: { page, filter } }))
   //   .data;
-  await sleep(3000);
+  await sleep(1000);
   return {
     items: products.filter((item) => item.bestseller),
   };

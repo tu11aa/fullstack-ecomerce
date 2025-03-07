@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useReducer } from "react";
-import { shopReducer, initialShopState, SHOP_ACTIONS } from "./shopReducer";
-import api from "../../config/api";
-import { useAuth } from "../auth/AuthContext";
-import useCart from "../../hooks/useCart";
+import React, { createContext, useContext, useReducer } from 'react';
+import { shopReducer, initialShopState, SHOP_ACTIONS } from './shopReducer';
+import api from '../../config/api';
+import { useAuth } from '../auth/AuthContext';
+import useCart from '../../hooks/useCart';
 
 const ShopContext = createContext(null);
 
@@ -21,7 +21,7 @@ const ShopProvider = ({ children }) => {
   // };
 
   const setShopFilters = (filters) => {
-    state = {
+    newState = {
       ...state,
       shop: {
         ...state.shop,
@@ -29,7 +29,7 @@ const ShopProvider = ({ children }) => {
       },
     };
 
-    dispatch({ type: SHOP_ACTIONS.SUCCESS, payload: state });
+    dispatch({ type: SHOP_ACTIONS.SUCCESS, payload: newState });
   };
 
   //   const setProducts = (products) => {
@@ -53,7 +53,7 @@ const ShopProvider = ({ children }) => {
 export const useShop = () => {
   const context = useContext(ShopContext);
   if (!context) {
-    throw new Error("useShop must be used within a ShopProvider");
+    throw new Error('useShop must be used within a ShopProvider');
   }
   return context;
 };
