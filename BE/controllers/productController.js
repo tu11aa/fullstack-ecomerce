@@ -5,7 +5,7 @@ import asyncHandler from "express-async-handler";
 
 const DEFAULT_CONFIGS = {
   ITEMS_PER_PAGE: 12,
-  CURRENCY: "USD",
+  CURRENCY: "VND",
   SORT_FIELD: "date",
   SORT_ORDER: "desc",
 };
