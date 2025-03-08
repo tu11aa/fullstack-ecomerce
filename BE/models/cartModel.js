@@ -19,6 +19,9 @@ const cartItemSchema = new mongoose.Schema(
       required: true,
       min: 1,
     },
+    price: {
+      type: Number,
+    },
     addedAt: {
       type: Date,
       default: Date.now,
@@ -31,35 +34,25 @@ const cartItemSchema = new mongoose.Schema(
   { _id: false }
 );
 
-const cartSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+const cartSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    items: {
+      type: [cartItemSchema],
+      default: [],
+    },
+    status: {
+      type: String,
+      enum: Object.values(CART_STATUS),
+      default: CART_STATUS.ACTIVE,
+    },
   },
-  items: {
-    type: [cartItemSchema],
-    default: [],
-  },
-  status: {
-    type: String,
-    enum: Object.values(CART_STATUS),
-    default: CART_STATUS.ACTIVE,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-cartSchema.pre("save", async function (next) {
-  this.updatedAt = new Date();
-  next();
-});
+  { timestamps: true }
+);
 
 cartSchema.methods.addToCart = async function (productId, quantity = 1) {
   if (quantity < 1) {
@@ -123,5 +116,5 @@ cartSchema.methods.removeFromCart = async function (productId, quantity = 1) {
   this.items.unshift(cartItem);
 };
 
-const cartModel = mongoose.model.cart || mongoose.model("Cart", cartSchema);
+const cartModel = mongoose.model("Cart", cartSchema);
 export default cartModel;

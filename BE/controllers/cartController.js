@@ -124,7 +124,6 @@ const clearCart = asyncHandler(async (req, res) => {
   }
 
   cart.items = [];
-  cart.updatedAt = new Date();
   await cart.save();
 
   res.status(200).json({ message: "Cart cleared successfully" });

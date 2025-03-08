@@ -1,19 +1,21 @@
-import express from "express";
+import express from 'express';
 import {
-  loginUser,
-  registerUser,
-  logoutUser,
-  adminLogin,
+  addNewAddress,
+  deleteAddress,
   getMe,
-} from "../controllers/userController.js";
-import { protect } from "../middlewares/authMiddleware.js";
+  updateAddress,
+} from '../controllers/userController.js';
+import { protect } from '../middlewares/authMiddleware.js';
 
 const userRouter = express.Router();
+const addressesRouter = express.Router();
 
-userRouter.get("/me", protect, getMe);
-userRouter.post("/login", loginUser);
-userRouter.post("/register", registerUser);
-userRouter.post("/logout", protect, logoutUser);
-userRouter.post("/admin", adminLogin);
+userRouter.get('/', protect, getMe);
+
+addressesRouter.post('/', protect, addNewAddress);
+addressesRouter.put('/:addressId', protect, updateAddress);
+addressesRouter.delete('/:addressId', protect, deleteAddress);
+
+userRouter.use('/addresses', addressesRouter);
 
 export default userRouter;
