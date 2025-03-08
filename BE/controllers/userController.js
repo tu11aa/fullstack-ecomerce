@@ -1,136 +1,169 @@
-import dotenv from "dotenv";
-import authHelper from "../helpers/authHelper.js";
-import userModel from "../models/userModel.js";
-import adminModel from "../models/adminModel.js";
-import validator from "validator";
-import asyncHandler from "express-async-handler";
-
-dotenv.config();
-
-const PASSWORD_MINIMUM_LENGTH = 6;
+import asyncHandler from 'express-async-handler';
 
 const getMe = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, user: req.user });
 });
 
-const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+const addNewAddress = asyncHandler(async (req, res) => {
+  const {
+    fullName,
+    phoneNumber,
+    addressLine1,
+    addressLine2 = '',
+    ward,
+    district,
+    city,
+    country,
+    postalCode = '',
+    isDefault = false,
+    coordinates = '',
+  } = req.body;
+  const user = req.user;
 
-  if (!validator.isEmail(email)) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Invalid email address" });
-  }
-
-  const user = await userModel.findOne({ email });
-
-  if (!user) {
-    return res.status(400).json({ success: false, message: "Invalid email" });
-  }
-
-  if (!(await authHelper.comparePassword(password, user.password))) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Invalid password" });
-  }
-
-  const token = authHelper.generateToken(user._id);
-
-  res.cookie("auth_token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  });
-
-  res.status(200).json({
-    success: true,
-    message: "Login successful",
-    user: {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      cartData: user.cartData,
-    },
-  });
-});
-
-const adminLogin = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!validator.isEmail(email)) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Invalid email address" });
-  }
-
-  const admin = await adminModel.findOne({ email });
-
-  if (!admin) {
-    return res.status(400).json({ success: false, message: "Invalid email" });
-  }
-
-  if (!authHelper.comparePassword(password, admin.password)) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Invalid password" });
-  }
-
-  const token = authHelper.generateToken(admin._id);
-
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  });
-
-  res.status(200);
-});
-
-const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
-
-  const exists = await userModel.findOne({ email });
-  if (exists) {
-    return res
-      .status(400)
-      .json({ success: false, message: "User already exists" });
-  }
-
-  if (!validator.isEmail(email)) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Invalid email address" });
-  }
-  if (password.length < PASSWORD_MINIMUM_LENGTH) {
+  if (
+    !fullName ||
+    !phoneNumber ||
+    !addressLine1 ||
+    !ward ||
+    !district ||
+    !city ||
+    !country
+  ) {
     return res.status(400).json({
       success: false,
-      message: `Password must be at least ${PASSWORD_MINIMUM_LENGTH} characters`,
+      message: 'Please fill in all required fields',
     });
   }
 
-  const hashedPassword = await authHelper.hashPassword(password);
-
-  const user = await userModel.create({
-    name,
-    email,
-    password: hashedPassword,
-  });
-  console.log("Created user \n", user);
-
-  res.status(201).json({ success: true, message: "User created successfully" });
-});
-
-const logoutUser = asyncHandler(async (req, res) => {
-  res.cookie("auth_token", "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    expires: new Date(0),
-    sameSite: "strict",
+  user.addresses.push({
+    fullName,
+    phoneNumber,
+    addressLine1,
+    addressLine2,
+    ward,
+    district,
+    city,
+    country,
+    postalCode,
+    isDefault,
+    coordinates,
   });
 
-  res.status(200).json({ success: true, message: "Logged out successfully" });
+  if (isDefault && user.addresses.length > 1) {
+    for (let i = 0; i < user.addresses.length - 1; ++i) {
+      if (user.addresses[i].isDefault) {
+        user.addresses[i].isDefault = false;
+      }
+    }
+  }
+
+  await user.save();
+
+  res.status(201).json({
+    success: true,
+    message: 'Address created successfully',
+    addresses: user.addresses,
+  });
 });
 
-export { getMe, loginUser, registerUser, logoutUser, adminLogin };
+const updateAddress = asyncHandler(async (req, res) => {
+  const { addressId } = req.params;
+  const {
+    fullName,
+    phoneNumber,
+    addressLine1,
+    addressLine2,
+    ward,
+    district,
+    city,
+    country,
+    postalCode,
+    isDefault,
+    coordinates,
+  } = req.body;
+  const user = req.user;
+
+  const address = user.addresses[addressId];
+
+  if (!address) {
+    return res
+      .status(400)
+      .json({ success: false, message: 'Invalid address ID' });
+  }
+
+  if (fullName) {
+    address.fullName = fullName;
+  }
+  if (phoneNumber) {
+    address.phoneNumber = phoneNumber;
+  }
+  if (addressLine1) {
+    address.addressLine1 = addressLine1;
+  }
+  if (addressLine2) {
+    address.addressLine2 = addressLine2;
+  }
+  if (ward) {
+    address.ward = ward;
+  }
+  if (district) {
+    address.district = district;
+  }
+  if (city) {
+    address.city = city;
+  }
+  if (country) {
+    address.country = country;
+  }
+  if (postalCode) {
+    address.postalCode = postalCode;
+  }
+  if (isDefault !== undefined) {
+    address.isDefault = isDefault;
+  }
+  if (coordinates) {
+    address.coordinates = coordinates;
+  }
+  user.addresses[addressId] = address;
+
+  if (isDefault && user.addresses.length > 1) {
+    for (let i = 0; i < user.addresses.length - 1; ++i) {
+      if (user.addresses[i].isDefault && addressId !== i) {
+        user.addresses[i].isDefault = false;
+      }
+    }
+  }
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Address updated successfully',
+    addresses: user.addresses,
+  });
+});
+
+const deleteAddress = asyncHandler(async (req, res) => {
+  const { addressId } = req.params;
+  const user = req.user;
+
+  const address = req.user.addresses[addressId];
+
+  if (!address) {
+    return res
+      .status(400)
+      .json({ success: false, message: 'Invalid address ID' });
+  }
+
+  user.addresses.splice(addressId, 1);
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Address deleted successfully',
+    addresses: user.addresses,
+  });
+});
+
+export { getMe, addNewAddress, updateAddress, deleteAddress };
